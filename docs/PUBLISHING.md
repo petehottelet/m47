@@ -43,6 +43,7 @@ npm pack --pack-destination dist
 | `m47-v0.2.0-skill.zip` | Portable Codex/Claude agent skill |
 | `m47-v0.2.0-website.zip` | Static host upload; unzip first if the host requires a folder |
 | `petehottelet-m47-0.2.0.tgz` | npm package from `npm pack` |
+| `m47-v0.2.0-source.zip` | Source at the release commit for store review; added by the draft-release workflow |
 | `SHA256SUMS.txt` | SHA-256 hashes of the eight ZIP artifacts |
 
 Unpacked `dist/chrome`, `dist/firefox`, `dist/newtab-*`, `dist/theme-*`, `dist/web`,
@@ -53,13 +54,14 @@ builds: the release step bundles modules for the browser. No remote code is load
 ## Private GitHub releases
 
 The initial source and final implementation are committed on `main`. The manual
-**Build draft release** Actions workflow builds, tests, packs, and creates a draft
-release. It never publishes to npm or a browser store. It fails rather than
+**Build draft release** Actions workflow builds, tests, packs, includes the reviewable
+source archive, and creates a draft release. It never publishes to npm or a browser store. It fails rather than
 silently overwriting an existing release with the same version.
 
 Manual equivalent after checks pass:
 
 ```sh
+git archive --format=zip --output=dist/m47-v0.2.0-source.zip HEAD
 gh release create v0.2.0 dist/*.zip dist/*.tgz dist/SHA256SUMS.txt --target main --draft --title "M47 0.2.0" --notes-file docs/RELEASE.md
 ```
 

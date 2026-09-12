@@ -23,7 +23,7 @@ const pkg = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'));
 if (pkg.version !== VERSION) throw new Error('Package and engine versions differ.');
 if (
   JSON.parse(await readFile(join(root, 'core/font-license.json'), 'utf8')) !==
-  (await readFile(join(root, 'extension/fonts/OFL.txt'), 'utf8'))
+  (await readFile(join(root, 'extension/fonts/OFL.txt'), 'utf8')).replace(/\r\n/g, '\n')
 )
   throw new Error('Embedded font license must match extension/fonts/OFL.txt.');
 const write = async (file, data) => {

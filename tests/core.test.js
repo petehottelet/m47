@@ -68,7 +68,7 @@ test('SVG meter labels stay below preceding tracks', () => {
   }
 });
 test('standalone HTML and SVG retain the embedded font license', async () => {
-  const license = await readFile('extension/fonts/OFL.txt', 'utf8');
+  const license = (await readFile('extension/fonts/OFL.txt', 'utf8')).replace(/\r\n/g, '\n');
   const options = { fontData: 'data:font/ttf;base64,AA==' };
   for (const output of [render({}, options), renderSVG({}, options)]) {
     const { document } = parseHTML(output);

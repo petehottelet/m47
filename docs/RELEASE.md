@@ -6,8 +6,9 @@ M47 0.2 turns the extension prototype into a shared engine and distribution kit.
 - Portable agent skill with offline engine, font, rubric, and examples.
 - Browser restyler: local preferences, instant reversible mode switching,
   inherited defaults, reader view, and bounded mutation processing.
-- Separate minimal-permission new-tab extensions and matching browser themes.
+- Separate permission-free new-tab extensions and matching browser themes.
 - Reproducible ZIP packages, licenses, privacy documents, and SHA-256 checksums.
+- Source archive for store review and a packed npm CLI/library.
 
 This is a private draft. Browser stores, npm, and the public website have not
 been published. Firefox ZIPs are unsigned; persistent installation needs Mozilla

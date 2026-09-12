@@ -34,6 +34,9 @@ try {
   const tab = tabs.find((x) => x.url?.includes('/store-demo'));
   await worker.evaluate((id) => chrome.tabs.sendMessage(id, { type: 'm47-reader' }), tab.id);
   await expect(page.locator('#__m47_reader')).toBeAttached();
+  await expect(page.frameLocator('#__m47_reader iframe').locator('h1')).toHaveText(
+    'A quiet night at the observatory',
+  );
   await page.screenshot({ path: join(out, 'screenshot-2.png') });
   await page.getByRole('button', { name: 'Close reader / Esc' }).click();
   const popup = await context.newPage();

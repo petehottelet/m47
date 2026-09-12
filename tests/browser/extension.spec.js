@@ -38,6 +38,9 @@ test('real extension switches modes without reload, restores styles and opens re
     const tab = tabs.find((x) => x.url?.includes('/fixture'));
     await worker.evaluate((id) => chrome.tabs.sendMessage(id, { type: 'm47-reader' }), tab.id);
     await expect(page.locator('#__m47_reader')).toBeAttached();
+    await expect(page.frameLocator('#__m47_reader iframe').locator('h1')).toHaveText(
+      'Field report',
+    );
     await page.getByRole('button', { name: 'Close reader / Esc' }).click();
     await expect(page.locator('#__m47_reader')).toHaveCount(0);
     await worker.evaluate(() => chrome.storage.local.set({ 'site:127.0.0.1': 'full' }));
