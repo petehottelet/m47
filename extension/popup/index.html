@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>M47 settings</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header>
+      <h1>M47</h1>
+      <span>TERMINAL CONTROL / 0.2</span>
+    </header>
+    <p id="host">Loading site…</p>
+    <main>
+      <h2 id="site-label">This site</h2>
+      <div class="row" id="site" role="group" aria-labelledby="site-label">
+        <button class="full" data-m="full" disabled>Full</button
+        ><button class="palette" data-m="palette" disabled>Palette</button
+        ><button class="off" data-m="off" disabled>Off</button>
+      </div>
+      <p id="site-status" class="note">Loading preferences…</p>
+      <button id="inherit" class="text" disabled>Use default for this site</button>
+      <h2 id="global-label">Default for other sites</h2>
+      <div class="row" id="global" role="group" aria-labelledby="global-label">
+        <button class="full" data-m="full" disabled>Full</button
+        ><button class="palette" data-m="palette" disabled>Palette</button
+        ><button class="off" data-m="off" disabled>Off</button>
+      </div>
+      <p class="note">
+        Full adds the frame. Palette restyles colors and controls. Off restores the page.
+        Alt+Shift+L cycles modes.
+      </p>
+      <button id="reader" class="reader" disabled>Open this page in Reader</button
+      ><button id="reset-sites" class="text">Clear all site overrides</button>
+      <p id="notice" role="status" class="note">
+        Preferences stay on this device. Changes apply without reloading.
+      </p>
+    </main>
+    <footer>
+      <a href="../PRIVACY.md" target="_blank" rel="noopener">Privacy</a
+      ><span>LOCAL / NO TELEMETRY</span>
+    </footer>
+    <script src="popup.js"></script>
+  </body>
+</html>

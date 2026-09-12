@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>M47 — privacy</title>
+    <link rel="stylesheet" href="app.css" />
+  </head>
+  <body>
+    <main class="document">
+      <a href="./">Back to workshop</a>
+      <h1>PRIVACY</h1>
+      <p>Effective September 12, 2026 · M47 0.2</p>
+      <h2>Browser extensions</h2>
+      <p>
+        M47 has no application server, analytics, ads, or telemetry. The page restyler reads styles
+        and page text locally to change appearance and, when requested, create a reader view. Page
+        content is not sent to M47 or recorded.
+      </p>
+      <p>
+        Modes and per-site hostname preferences are stored in your browser's local extension
+        storage. Version 0.2 migrates settings from the prototype's browser sync storage and removes
+        those old sync keys. Your browser may take time to propagate that deletion to other devices.
+      </p>
+      <p>
+        The separate new-tab extension stores only your quick-link names and addresses in local
+        extension storage. It does not read your browser bookmarks or webpage content. Following a
+        saved link navigates to that website normally.
+      </p>
+      <h2>Generator website</h2>
+      <p>
+        The website host receives normal requests for the app and bundled assets and may keep
+        standard access logs under its own policy. M47 adds no analytics. Editing and importing
+        happen on this device. Drafts are saved in local browser storage; the application shell is
+        cached for offline use.
+      </p>
+      <p>
+        Export downloads files to your device. A share link contains the complete panel in its URL
+        fragment. Anyone you give the link to can read that content. Fragments are not sent in HTTP
+        requests, but a browser's history, synchronization, clipboard, and recipients may retain the
+        URL.
+      </p>
+      <h2>Your controls</h2>
+      <p>
+        Use “Clear all site overrides” to remove extension exceptions. Reset the workshop draft,
+        clear the site's browser data to remove stored drafts and cache, or uninstall an extension
+        to remove its local data.
+      </p>
+      <p>Contact: <a href="mailto:pete@hottelet.com">pete@hottelet.com</a></p>
+    </main>
+  </body>
+</html>

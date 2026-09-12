@@ -1,0 +1,52 @@
+{
+  "name": "@petehottelet/m47",
+  "version": "0.2.0",
+  "description": "Deterministic retro terminal layouts: engine, CLI, SVG, HTML and PNG exports",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "bin": {
+    "m47": "cli/index.js"
+  },
+  "exports": {
+    ".": "./core/index.js",
+    "./tokens": "./core/tokens.json",
+    "./feedback": "./core/feedback.js",
+    "./extract": "./core/extract.js"
+  },
+  "files": [
+    "core",
+    "cli",
+    "extension/fonts",
+    "LICENSE",
+    "NOTICE",
+    "PRIVACY.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/petehottelet/m47.git"
+  },
+  "scripts": {
+    "dev": "node scripts/serve.js",
+    "build": "node scripts/build.js",
+    "test": "node --test tests/*.test.js",
+    "test:browser": "playwright test",
+    "check": "npm run build && npm test && npm run test:browser",
+    "format": "prettier --write core cli scripts web extension tests playwright.config.js package.json",
+    "format:check": "prettier --check core cli scripts web extension tests playwright.config.js package.json",
+    "prepack": "node --test tests/core.test.js"
+  },
+  "dependencies": {
+    "@resvg/resvg-js": "2.6.2",
+    "linkedom": "0.18.12"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
+    "@playwright/test": "1.63.0",
+    "esbuild": "0.28.2",
+    "fflate": "0.8.3",
+    "prettier": "3.9.6"
+  }
+}

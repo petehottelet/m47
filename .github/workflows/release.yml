@@ -1,0 +1,25 @@
+name: Build draft release
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+      - run: npx playwright install --with-deps chromium firefox
+      - run: npm run test:browser
+      - run: npm pack --pack-destination dist
+      - name: Create private draft with reviewed artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          gh release create "v$VERSION" dist/*.zip dist/*.tgz dist/SHA256SUMS.txt --target "$GITHUB_SHA" --draft --title "M47 $VERSION" --notes-file docs/RELEASE.md

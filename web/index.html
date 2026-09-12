@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Compose original retro terminal interfaces. Generate and export HTML, SVG, PNG, and CSS locally with M47."
+    />
+    <title>M47 — interface workshop</title>
+    <link rel="preload" href="fonts/Antonio.ttf" as="font" type="font/ttf" crossorigin />
+    <link rel="icon" href="icon.png" />
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="stylesheet" href="app.css" />
+  </head>
+  <body>
+    <a class="skip" href="#workspace">Skip to workshop</a>
+    <header class="masthead">
+      <a class="wordmark" href="./" aria-label="M47 home">M<span>47</span></a>
+      <div class="mastbar"><span>INTERFACE WORKSHOP</span><span>LOCAL / 0.2</span></div>
+      <a href="guide.html" class="guide-link">Install & publish</a>
+    </header>
+    <main id="workspace">
+      <div class="intro">
+        <h1>MAKE ROOM<br />FOR THE SIGNAL.</h1>
+        <p>
+          Compose a quiet, original retro terminal.<br />One engine. Any canvas. Everything stays
+          here.
+        </p>
+      </div>
+      <form id="controls" class="controls" aria-label="Canvas settings">
+        <label
+          >Canvas<select id="preset">
+            <option value="1280x800">Desktop / 1280 × 800</option>
+            <option value="600x1000">Portrait / 600 × 1000</option>
+            <option value="1920x700">Wide / 1920 × 700</option>
+            <option value="480x240">Widget / 480 × 240</option>
+            <option value="1600x2400">Poster / 1600 × 2400</option>
+            <option value="custom">Custom</option>
+          </select></label
+        >
+        <div class="size-fields">
+          <label
+            >Width<input
+              id="width"
+              type="number"
+              min="320"
+              max="4096"
+              value="1280"
+              required /></label
+          ><span>×</span
+          ><label
+            >Height<input id="height" type="number" min="170" max="4096" value="800" required
+          /></label>
+        </div>
+        <label
+          >Palette<select id="scheme">
+            <option value="tng-default">Warm / classic</option>
+            <option value="tng-early">Gold / lavender</option>
+            <option value="red-alert">Alert / red</option>
+          </select></label
+        >
+        <label
+          >Density<select id="density">
+            <option value="comfortable">Comfortable</option>
+            <option value="compact">Compact</option>
+          </select></label
+        >
+        <label class="seed-label"
+          >Seed
+          <div class="seed-control">
+            <input id="seed" value="47" maxlength="100" /><button
+              id="shuffle"
+              type="button"
+              aria-label="Shuffle seed"
+              title="Shuffle seed"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M3 6h3c5 0 7 12 12 12h3m-4-4 4 4-4 4M3 18h3c2 0 4-3 6-6s4-6 6-6h3m-4-4 4 4-4 4"
+                />
+              </svg>
+            </button></div
+        ></label>
+      </form>
+      <div class="workbench">
+        <section class="preview-pane" aria-labelledby="preview-title">
+          <div class="pane-heading">
+            <h2 id="preview-title">Live panel</h2>
+            <span id="canvas-status">1280 × 800</span>
+          </div>
+          <div class="preview-shell">
+            <div id="preview-holder">
+              <iframe id="preview" title="Generated interface preview" sandbox=""></iframe>
+            </div>
+          </div>
+          <div class="exports" aria-label="Export panel">
+            <button id="export-html" class="primary">Export HTML</button
+            ><button id="export-svg">SVG</button><button id="export-png">PNG</button
+            ><button id="export-css">Theme CSS</button><button id="copy">Copy HTML</button
+            ><button id="share">Copy share link</button>
+          </div>
+          <p class="hint">
+            HTML scrolls for long content. SVG and PNG use the exact canvas dimensions.
+          </p>
+        </section>
+        <section class="editor-pane" aria-labelledby="editor-title">
+          <div class="pane-heading">
+            <h2 id="editor-title">Content</h2>
+            <button id="import" class="text-button">Import file</button>
+          </div>
+          <label class="sr-only" for="spec">Panel content as JSON</label
+          ><textarea id="spec" spellcheck="false" aria-describedby="editor-help error"></textarea>
+          <p id="editor-help" class="hint">
+            Edit JSON, or import a JSON, HTML, or text file. Supports text, metrics, tables, and
+            bars. Drafts save on this device.
+          </p>
+          <div id="error" role="alert"></div>
+          <button id="reset" class="text-button">Reset draft to Observatory</button
+          ><input id="file" type="file" accept=".json,.html,.htm,.txt,.md" hidden />
+        </section>
+      </div>
+      <section class="gallery" aria-labelledby="gallery-title">
+        <div class="pane-heading">
+          <h2 id="gallery-title">A starting frequency</h2>
+          <span>8 ORIGINAL COMPOSITIONS</span>
+        </div>
+        <div id="gallery"></div>
+      </section>
+      <button id="tone" class="text-button" type="button">Preview synthesized tone</button>
+      <p id="status" class="status" role="status" aria-live="polite">
+        Ready. No account, no cloud, no telemetry.
+      </p>
+    </main>
+    <footer class="footer">
+      <p>
+        M47 is an original fan-made interface project. LCARS created by Michael Okuda.<br />Not
+        affiliated with CBS Studios, Paramount, or any rights holder. Code MIT · Antonio font SIL
+        OFL.
+      </p>
+      <div>
+        <a href="privacy.html">Privacy</a><a href="guide.html">Guide</a
+        ><a href="LICENSE.txt">License</a>
+      </div>
+    </footer>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>

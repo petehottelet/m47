@@ -1,0 +1,28 @@
+name: Website compatibility
+description: Report a reproducible M47 page-styling issue
+body:
+  - type: input
+    id: url
+    attributes:
+      label: Website URL
+      description: Remove private query parameters and account identifiers.
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and M47 versions
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Mode
+      options: [Full, Palette, Reader]
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: What happened and how to reproduce it
+      description: Include expected behavior, whether Off restores it, and an original minimal HTML fixture when possible. Do not attach private page content.
+    validations:
+      required: true

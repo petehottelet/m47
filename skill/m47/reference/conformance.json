@@ -1,0 +1,5 @@
+{
+  "version": "0.2.0",
+  "automatedSubset": ["document language", "main landmark", "page heading", "black ground token", "no gradients or shadows", "reduced motion rule"],
+  "visualAndBehavioralReview": ["black gutters and rounded exposed bar ends", "warm structure and cool data", "text contrast 4.5:1 or 3:1 for large text", "no clipped user content", "keyboard focus visible", "controls have meaningful behavior", "reduced motion respected", "original composition and licensed assets", "44px touch targets", "body and code remain readable"]
+}

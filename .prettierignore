@@ -1,0 +1,6 @@
+dist
+node_modules
+store-assets
+docs/PRD.md
+package-lock.json
+test-results

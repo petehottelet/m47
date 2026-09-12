@@ -1,5 +1,14 @@
 # swept — an LCARS Interface Engine
 
+> **Historical research draft.** The shipping name is M47. The original plans,
+> competitor statements, legal assertions, dates, prices, and performance targets
+> below have not all been independently validated. They are not release claims or
+> a rights-clearance opinion. [IMPROVEMENTS.md](IMPROVEMENTS.md) defines the 0.2
+> implementation, [ASSESSMENT.md](ASSESSMENT.md) records actual evidence, and
+> [PUBLISHING.md](PUBLISHING.md) supersedes the distribution advice. The source
+> repository is private. Original code and project docs are MIT; Antonio is OFL.
+> Earlier CC BY-SA and non-commercial licensing language below is superseded.
+
 **Product Requirements Document**
 
 | | |

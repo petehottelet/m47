@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>M47 — install and publish</title>
+    <link rel="stylesheet" href="app.css" />
+  </head>
+  <body>
+    <main class="document">
+      <a href="./">Back to workshop</a>
+      <h1>ONE ENGINE.<br />YOUR NEXT SURFACE.</h1>
+      <p>
+        Generate a panel here, use M47 in your terminal, add its skill to an agent, or bring the
+        look into your browser.
+      </p>
+      <h2>Use the workshop</h2>
+      <p>
+        Choose an example, edit its JSON, set a canvas and export. HTML includes the font and
+        scrolls for long content. SVG and PNG use a fixed canvas; increase its height if the content
+        will not fit. Theme CSS exports the semantic color tokens.
+      </p>
+      <p>
+        Install the workshop from your browser's app menu when available. Once loaded online, its
+        application files are cached for offline use. Drafts stay on this device. Copying a share
+        link includes the panel content in the link.
+      </p>
+      <h2>Run the CLI</h2>
+      <p>From a source checkout with Node 22 or later:</p>
+      <pre><code>npm ci&#10;npm run build&#10;node cli/index.js generate --spec dist/example.json --out panel.html&#10;node cli/index.js generate --spec dist/example.json --out panel.png</code></pre>
+      <p>
+        The npm package name configured by the project is <code>@petehottelet/m47</code>. Registry
+        publication is separate; do not assume it is already available.
+      </p>
+      <h2>Install an extension locally</h2>
+      <p>
+        Run the build, open <code>chrome://extensions</code> or <code>edge://extensions</code>,
+        enable Developer mode, and load <code>dist/chrome</code>. Install
+        <code>dist/newtab-chrome</code> separately if you want the new-tab dashboard.
+      </p>
+      <p>
+        For Firefox, open <code>about:debugging</code>, select This Firefox, and load
+        <code>dist/firefox/manifest.json</code> temporarily. Persistent distribution needs Mozilla
+        signing. Host access may need to be granted in the extension's permission controls.
+      </p>
+      <h2>Install the agent skill</h2>
+      <p>
+        Extract <code>m47-v0.2.0-skill.zip</code>. Place its <code>m47</code> folder in your agent's
+        skills directory. The bundle contains the guide, engine, CLI, fonts, and examples.
+      </p>
+      <h2>Publish</h2>
+      <p>
+        The source repository is private. Public stores, npm packages, and hosted websites are
+        separate distribution choices. The repository's <code>docs/PUBLISHING.md</code> contains the
+        commands, asset names, account steps, store copy, and current documentation links.
+      </p>
+      <p>
+        For static hosts use build command <code>npm ci &amp;&amp; npm run build</code> and output
+        directory <code>dist/web</code>. The public privacy-policy URL will be
+        <code>/privacy.html</code> on that host. A private GitHub file is not a public
+        privacy-policy URL.
+      </p>
+      <h2>Credits</h2>
+      <p>
+        M47 is an original fan-made project. LCARS created by Michael Okuda. Not affiliated with CBS
+        Studios, Paramount, or any rights holder. Code and project docs MIT; Antonio font SIL OFL.
+      </p>
+    </main>
+  </body>
+</html>

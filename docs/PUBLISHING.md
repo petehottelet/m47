@@ -1,134 +1,254 @@
-# Publishing M47 — the complete playbook
+# Publishing M47 0.2
 
-Everything below matches the assets in this package: `m47-extension-v0.1.0-chrome.zip`
-(store-ready build), `m47-extension-v0.1.0-firefox.zip` (AMO build), screenshots
-(1280×800), promo tiles (440×280, 1400×560), and `PRIVACY.md` (inside the builds).
+The source repository is **private**: https://github.com/petehottelet/m47.
+Keep it private. A public website, npm package, or store upload publishes the
+selected artifact separately. Private GitHub release links require repository
+access; a private README or PRIVACY.md cannot serve as a public policy URL.
 
----
+## Recommended order
 
-## Step 0 (recommended first): the GitHub home
+1. Use the local builds and private draft release with invited testers.
+2. Publish `dist/web` to a static host. Its `/privacy.html` is the public policy.
+3. Submit the page extension to Chrome, Firefox, and Edge. Submit the separate
+   new-tab and theme packages only if you want those additional store listings.
+4. Publish the npm package and distribute the agent skill when ready to make
+   those source bundles public. The MIT license permits this; repository
+   visibility is independent of the license.
 
-Create a public repo (e.g. `m47`). Push the extension source, add a Release with
-the zip, and put `PRIVACY.md` at the root — the stores require a public privacy
-policy URL and the raw GitHub file works perfectly. The repo is also where the
-open-source fan-project posture lives (disclaimer + Okuda credit in the README,
-MIT license, non-commercial statement). Users can sideload from here forever,
-which means no store decision can ever kill the project.
+No store fees have been paid, accounts created, packages publicly published, or
+website deployed by the repository setup. Store accounts, any current fees,
+identity checks, consent screens, and reviews remain the publisher's steps.
 
-## Route A: Chrome Web Store (the big one)
+## Build once
 
-1. Register at the developer dashboard: https://chrome.google.com/webstore/devconsole
-   — one-time **$5** fee, verify your email, set up 2FA.
-2. **Add new item** → upload `m47-extension-v0.1.0-chrome.zip`.
-3. **Store listing tab** — use the copy below; upload `screenshot-1.png`,
-   `screenshot-2.png` (1280×800 — the required size), and
-   `promo-small-440x280.png`; `promo-marquee-1400x560.png` is optional but
-   makes the listing look serious. Category: **Fun** (or Accessibility).
-4. **Privacy tab** — this is what reviewers actually read:
-   - Single purpose: *"Restyles web pages into a retro terminal visual theme."*
-   - Permission justifications (paste-ready):
-     - `storage` — "Saves the user's per-site and default theme mode."
-     - `activeTab` — "Reads the current tab's hostname so the popup can set a per-site preference."
-     - Host permissions (`http/https on all sites`) — "The extension's sole
-       function is restyling any page the user visits; the content script must
-       run on all sites. No page data is read, stored, or transmitted."
-   - Remote code: **No**. Data collection: **None** (check nothing).
-   - Privacy policy URL: your GitHub `PRIVACY.md` link.
-5. **Visibility: start Unlisted.** You get a real store URL to share while
-   keeping the complaint surface near zero; flip to Public when v0.2 has a
-   per-site fixes pipeline and you're ready for strangers.
-6. Submit. Review typically takes 1–7 days; broad host permissions put you in
-   the slower, human-review lane — the justifications above are what gets you
-   through.
+From this directory, on Windows, macOS, or Linux, with Node 22+:
 
-## Route B: Firefox Add-ons (AMO) — free
+```sh
+npm ci
+npm run build
+npm test
+npx playwright install chromium firefox
+npm run test:browser
+npm pack --pack-destination dist
+```
 
-1. https://addons.mozilla.org/developers/ — free account.
-2. Submit `m47-extension-v0.1.0-firefox.zip` (its manifest already carries the
-   `gecko` ID and event-page background). Listed review is usually hours-to-days.
-3. Firefox quirk to mention in the listing: MV3 host permissions are opt-in —
-   after installing, users click the extension → "Always allow on every site."
-4. AMO also offers **self-distribution**: they sign your .xpi and you host it
-   yourself (pairs well with the GitHub release).
+| Artifact in `dist/` | Destination |
+|---|---|
+| `m47-v0.2.0-chrome.zip` | Chrome Web Store and Edge Add-ons; page restyler + Reader |
+| `m47-v0.2.0-firefox.zip` | AMO listing or unlisted signing; page restyler + Reader |
+| `m47-v0.2.0-newtab-chrome.zip` | Separate Chrome/Edge new-tab listing |
+| `m47-v0.2.0-newtab-firefox.zip` | Separate Firefox new-tab listing/signing |
+| `m47-v0.2.0-theme-chrome.zip` | Chrome Web Store theme listing |
+| `m47-v0.2.0-theme-firefox.zip` | Firefox theme listing |
+| `m47-v0.2.0-skill.zip` | Portable Codex/Claude agent skill |
+| `m47-v0.2.0-website.zip` | Static host upload; unzip first if the host requires a folder |
+| `petehottelet-m47-0.2.0.tgz` | npm package from `npm pack` |
+| `SHA256SUMS.txt` | SHA-256 hashes of the eight ZIP artifacts |
 
-## Route C: Edge Add-ons — free
+Unpacked `dist/chrome`, `dist/firefox`, `dist/newtab-*`, `dist/theme-*`, `dist/web`,
+and `dist/skill/m47` are also provided. Source files are not unpacked extension
+builds: the release step bundles modules for the browser. No remote code is loaded.
+`build.sh` and `build.ps1` call the same Node build.
 
-https://partner.microsoft.com/dashboard/microsoftedge — free registration, accepts
-the same Chrome zip unchanged. Low traffic, zero extra work.
+## Private GitHub releases
 
----
+The initial source and final implementation are committed on `main`. The manual
+**Build draft release** Actions workflow builds, tests, packs, and creates a draft
+release. It never publishes to npm or a browser store. It fails rather than
+silently overwriting an existing release with the same version.
 
-## Store listing copy (fully clean — see IP notes)
+Manual equivalent after checks pass:
 
-**Name:** `M47 — retro terminal interface`
+```sh
+gh release create v0.2.0 dist/*.zip dist/*.tgz dist/SHA256SUMS.txt --target main --draft --title "M47 0.2.0" --notes-file docs/RELEASE.md
+```
 
-**Summary (under 132 chars):**
-`Browse the web as a calm retro sci-fi terminal: black ground, warm curved chrome, pill buttons, condensed uppercase type.`
+On PowerShell, use `Get-ChildItem` to assemble an array of archive paths if your
+shell does not expand wildcards for gh. A draft is visible only to users with
+sufficient repository access. Invite testers through Settings → Collaborators;
+source and private release links are not anonymous distribution links.
+
+## Static website, PWA, and policy hosting
+
+The app needs only static files. There is no database, API server, secret, or
+account system. Build command: `npm ci && npm run build`. Publish directory:
+`dist/web`. All asset paths are relative, so subdirectory hosting works.
+The app manifest and service worker support installation/offline loading on
+compatible browsers after an initial online visit. HTTPS is required for public
+service-worker use. Hosting providers may record ordinary access logs.
+
+### Netlify
+
+Import the private GitHub repository with access to that repository. The included
+`netlify.toml` selects Node 22, the build command, and `dist/web`. Alternatively,
+upload the built `dist/web` folder through Netlify's deployment UI. A published
+site exposes its delivered JavaScript and assets even while the repository stays
+private. Use the resulting `/privacy.html` address in store listings.
+[Netlify build configuration](https://docs.netlify.com/build/configure-builds/overview/).
+
+### GitHub Pages
+
+The included **Publish website to GitHub Pages** workflow is manual. In repository
+Settings → Pages, choose GitHub Actions, then dispatch the workflow. A personal
+private repository needs an eligible plan such as GitHub Pro for Pages; do not
+make this repository public just to enable hosting. The published Pages site is
+normally public even though its source repo is private. Use Netlify or another
+static host if your plan does not support this configuration.
+[GitHub Pages availability and visibility](https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages).
+
+### Cloudflare Pages / any static host
+
+Use Direct Upload for `dist/web`, or configure a Git-based build with the same
+build command/output. Cloudflare Direct Upload and Git integration have different
+project setup paths, so choose the intended path when creating the project.
+[Cloudflare Direct Upload](https://developers.cloudflare.com/pages/get-started/direct-upload/).
+The built directory can also go on an existing HTTPS web server or static host.
+No plugin installation is required to use the artifacts.
+
+## Chrome Web Store
+
+1. Sign in to the [developer dashboard](https://chrome.google.com/webstore/devconsole),
+   complete registration, current fee/identity steps, email verification, and 2FA.
+2. Add an item and upload `m47-v0.2.0-chrome.zip`.
+3. Supply the listing copy below and current screenshots from `store-assets/v0.2/`.
+   The original root store artwork is retained as historical material; review it
+   before reusing it. A screenshot is evidence of the represented product, not a
+   guarantee that every site is compatible.
+4. Complete the privacy and permissions declarations using the actual behavior
+   below. Supply the public hosted `/privacy.html` URL.
+5. Choose the desired listing visibility and submit for review. Unlisted is useful
+   for link-based testing but is not private and does not bypass policies/review.
+
+[Official publication steps](https://developer.chrome.com/docs/webstore/publish).
+Review timelines vary; this project does not promise approval or a date.
+
+**Page-extension permission explanations**
+
+- `storage`: saves local per-site/default modes and migrates the prototype's old
+  sync settings into local storage before deleting old sync keys.
+- `activeTab`: identifies the active page for popup controls and Reader.
+- `http://*/*`, `https://*/*`: content scripts restyle pages in place and respond to
+  per-site mode changes. Reader extracts text locally when explicitly requested.
+- Remote executable code: none. Analytics/telemetry: none. Page content is not
+  transmitted. Review the separate website's normal hosting/share behavior when
+  completing declarations; it is described in the privacy policy.
+
+## Firefox: AMO listing or signed self-distribution
+
+Submit `m47-v0.2.0-firefox.zip` at the
+[Add-ons Developer Hub](https://addons.mozilla.org/developers/). Choose listing on
+AMO or self-distribution. The latter returns a signed XPI you can distribute to
+invited testers or on a public download host. A raw unsigned ZIP is only suitable
+for temporary developer loading. Use the separate Firefox packages for new-tab
+and theme listings; each has its own stable add-on ID.
+
+The functional extension builds require Firefox 140+ and declare
+`data_collection_permissions.required: ["none"]`. Modern new submissions must
+state their data practices. Host permissions can require a user grant through
+Firefox's extension controls; test a clean install and document the prompt shown.
+[Mozilla submission guide](https://extensionworkshop.com/documentation/publish/submitting-an-add-on/),
+[built-in data consent](https://extensionworkshop.com/documentation/develop/firefox-builtin-data-consent/).
+
+For source review, supply a source archive plus `package-lock.json`, Node 22, and
+these reproduction commands: `npm ci`, `npm run build`. The source repo is private;
+reviewers need the archive, not an inaccessible private URL. Create it from the
+release commit with `git archive --format=zip --output=dist/m47-v0.2.0-source.zip HEAD`.
+Do not add node_modules, secrets, browser profiles, or unrelated local files.
+
+## Microsoft Edge Add-ons
+
+Use the [Partner Center extension flow](https://partner.microsoft.com/dashboard/microsoftedge).
+Register the publisher account and upload `m47-v0.2.0-chrome.zip`; submit the new-tab
+package separately if desired. Provide store copy, permission descriptions,
+screenshots, support contact, and the public privacy URL. Test the final package
+in Edge before submission; Chromium test coverage alone is not Edge certification.
+[Microsoft's publishing guide](https://learn.microsoft.com/en-us/microsoft-edge/extensions/publish/publish-extension).
+
+## Browser color themes
+
+The Chrome theme uses a Manifest V3 theme package; Firefox's static theme uses
+Manifest V2. These contain colors and metadata, no executable code. Upload the
+matching `theme-*.zip` to the browser's theme publication flow. They change browser
+chrome only; install the restyler or new-tab extension for those surfaces.
+[Chrome themes](https://developer.chrome.com/docs/extensions/develop/ui/themes).
+
+## npm CLI/library
+
+The configured package name is `@petehottelet/m47`. You must control that npm scope
+and verify name availability; the GitHub account does not create an npm account.
+Publishing `--access public` makes the package files public while GitHub stays private.
+
+```sh
+npm login
+npm whoami
+npm pack --dry-run
+npm publish --access public
+```
+
+Inspect the dry-run allowlist: core, CLI, font/OFL, LICENSE, NOTICE, README and
+privacy text. Do not publish a version until its tests and metadata are final;
+registry versions cannot be reused. Complete the registry's current 2FA or trusted
+publishing requirements. No registry credential is stored in the project.
+[Scoped public packages](https://docs.npmjs.com/creating-and-publishing-scoped-public-packages/).
+
+After actual publication:
+
+```sh
+npx @petehottelet/m47 generate --title "Station 47" --out station.html
+npm install @petehottelet/m47
+```
+
+## Codex and Claude skill distribution
+
+Extract `m47-v0.2.0-skill.zip` and copy the `m47` directory into the configured
+skills directory: commonly `$CODEX_HOME/skills/m47` (or `~/.codex/skills/m47`) for
+Codex, and `~/.claude/skills/m47` for Claude Code. Project-scoped skill directories
+are also possible; follow the installed agent's current discovery rules. Restart
+or reload its skill discovery if required. The same SKILL.md is used by both.
+
+The skill has its own offline engine, CLI, examples and font. HTML/SVG need Node
+22 only. Run `npm ci --omit=dev` inside the extracted skill if PNG or local HTML
+extraction is needed. Package dependencies are installed by npm; generation itself
+uses no network. Test the ten prompts in `reference/evaluation.md` in each agent
+before claiming the original PRD's dual-agent evaluation gate.
+
+## Paste-ready page-extension listing
+
+**Name:** M47 — retro terminal interface
+
+**Summary:** Restyle the web as a calm retro terminal. Per-site modes, instant undo,
+a local reader, and no telemetry.
 
 **Description:**
 
-> M47 re-renders the web as a calm retro terminal out of 1980s production
-> design: pure black ground, flat warm color, curved panel chrome, pill-shaped
-> controls, condensed uppercase type. No gradients, no shadows — ever.
->
-> THREE MODES, PER SITE OR EVERYWHERE
-> • FULL — full restyle plus frame chrome: a live side rail (scroll-to-top,
->   hostname, a scan readout that tracks your scrolling, numeric cascade) and a
->   top bar with the page title and clock.
-> • PALETTE — recolor and retype only: black ground, warm palette, golden links,
->   pill buttons, themed scrollbars.
-> • OFF — leave the site alone. M47 remembers your choice per site.
->
-> Alt+Shift+L cycles the current site's mode.
->
-> PRIVATE BY CONSTRUCTION — no network requests, no analytics, no data
-> collection of any kind. Settings stay in your browser. Free and open source:
-> [your GitHub link]
->
-> Honest note: heavyweight web apps may show a few unconverted corners — flip
-> those sites to PALETTE or OFF and M47 remembers.
+M47 brings black space, warm curved frames, pill controls, and condensed display
+type to ordinary webpages.
 
----
+FULL restyles a page and adds the terminal frame. PALETTE changes colors and
+controls. OFF restores M47's changes. Settings apply immediately without reloading
+the page. Choose a per-site mode or follow your default; Alt+Shift+L cycles modes.
 
-## The IP question, answered plainly (factual landscape, not legal advice)
+Open Reader for a local text-focused view of an article, then close it to return
+to the original page. Settings stay on this device. No analytics, ads, application
+server, or page-content transmission. Fonts and executable code are bundled.
 
-**Can a generative geometric style be "clean" of TNG references? Substantially, yes.**
+Some complex applications, embedded frames, and shadow-root content may not be
+fully restyled. Use Palette or Off when needed. Browser internal pages and some
+store pages cannot be modified.
 
-What copyright protects is *specific expression* — particular screen panels,
-recorded sounds, fonts as software, names and marks. What it does not protect
-is a *style*: geometric vocabulary (curved elbows, pill caps, bars on black),
-color palettes as such, or the idea of a retro terminal aesthetic. A generator
-that composes **original layouts** from that vocabulary — never tracing or
-reproducing a screen-used panel — is building new expression in an
-unprotectable style. That's categorically different from copying, and it's
-exactly how M47 is built: original compositions, an openly-licensed font
-(Antonio, OFL — not the commercial Swiss 911), synthesized-only sounds, no
-ripped assets anywhere.
+Original fan-made interface project. LCARS interface language created by Michael
+Okuda. Not affiliated with CBS Studios, Paramount, or any rights holder. Code MIT;
+Antonio font SIL OFL. Support: pete@hottelet.com.
 
-The compliance checklist for "clean":
-1. **No marks anywhere public:** no "LCARS," "Star Trek," "TNG," "Okudagram,"
-   ship or character names in the product name, store listing, screenshots, or
-   promo art. The listing copy above already satisfies this — it describes the
-   aesthetic generically ("retro sci-fi terminal," "1980s production design").
-2. **No copied assets:** fonts, sounds, imagery all original/openly licensed. Done.
-3. **Generative-only output:** no presets that recreate specific screens from
-   the show, no episode content in demos. Done.
-4. **Don't market the association:** every public sentence that invokes the
-   franchise ("browse like the Enterprise!") converts style into a claimed
-   affiliation and is the easiest complaint to file. Truthful *descriptive*
-   reference ("inspired by the LCARS style created by Michael Okuda") is
-   nominative use and is how surviving fan projects operate on GitHub — but in
-   a **store listing** it's the one string a rights-holder can search for.
-   Recommended split: stores fully clean; GitHub README may keep the credited,
-   disclaimed fan framing (or go fully clean there too — your call, and going
-   fully clean everywhere is the strictly safer option).
+The new-tab and theme listings must describe only their own functionality. Do not
+reuse the page-extension permission declarations for the permission-free new tab
+or static themes. Do not claim the private source is publicly available.
 
-**Residual risk, honestly:** the style is recognizable, CBS has claimed
-copyright over the LCARS GUI before (the 2011 Tricorder app takedown), and
-stores comply with complaints first and ask questions later — so "clean" cannot
-mean "zero risk," it means "no easy target": nothing searchable, nothing copied,
-nothing sold. Every documented enforcement hit projects that used the marks,
-copied assets, or made money. Keep M47 free, keep the takedown-protocol
-(comply immediately, GitHub remains the home), and if commercial ambitions ever
-develop, talk to an IP attorney first — that's the line where the calculus
-actually changes.
+## Rights and release review
+
+Use original compositions and properly licensed assets, retain NOTICE/OFL/license
+files, and avoid implying endorsement. MIT covers the project's code and original
+docs; it does not establish clearance for third-party marks or visual designs.
+The old PRD's legal discussion is historical, unverified research, not a clearance
+opinion or a promise of a safe harbor. A recognizable fan style can still attract
+complaints or store rejection. Rights concerns go to the contact in NOTICE.

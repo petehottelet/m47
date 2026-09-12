@@ -1,17 +1,40 @@
-# M47 — Privacy Policy
+# M47 privacy policy
 
-**Effective: September 12, 2026**
+Effective September 12, 2026 — version 0.2.
 
-M47 does not collect, transmit, sell, or share any data. Period.
+## Page extension
 
-- **No data leaves your browser.** The extension makes no network requests.
-  The display font is bundled inside the extension package.
-- **What is stored:** your mode preferences (Full / Palette / Off, per site and
-  as a default) are saved with your browser's extension-settings storage
-  (`chrome.storage.sync`), which your browser may sync between your own devices
-  through your own browser account. M47 has no server and never sees this data.
-- **Page access:** the extension reads page styling in order to restyle it,
-  entirely locally. Page content is never recorded, stored, or transmitted.
-- **No analytics, no telemetry, no ads, no accounts.**
+M47 has no application server, analytics, advertising, accounts, or telemetry.
+It reads styles to restyle a page and reads visible article text when you request
+Reader. Page content is processed in your browser, not recorded or sent to M47.
+Bundled fonts are loaded from the extension package.
 
-Contact: pete@hottelet.com
+Mode preferences and site hostnames are stored in `storage.local`. Version 0.2
+migrates the prototype's `storage.sync` settings to local storage and removes the
+old sync keys. Your browser controls when that deletion reaches other devices.
+M47 does not synchronize new settings.
+
+The separate new-tab extension stores quick-link names and URLs locally. It does
+not read your browser bookmarks. Clicking a link navigates to its website normally.
+Browser themes contain no executable code or stored user data.
+
+## Generator website and CLI
+
+The host receives ordinary requests for the website and bundled files and may
+retain standard access logs under its own policy. M47 adds no analytics. Editing,
+imports, and rendering happen on your device. A local draft is stored in browser
+storage. A service worker caches the app shell for offline use.
+
+Exports download local files. Share links encode the complete panel in the URL
+fragment. Anyone receiving a link can read its panel. HTTP requests do not include
+fragments, but browser history, synchronization, clipboard tools and recipients
+may retain the URL. Only share content you intend to disclose.
+
+The CLI reads local files and writes requested outputs; it makes no network calls.
+Installing dependencies through npm involves the registry as usual.
+
+## Controls and contact
+
+Clear site overrides in the popup. Uninstall an extension to remove its local data.
+Reset a workshop draft or clear the website's browser data to remove drafts/cache.
+Contact: pete@hottelet.com.
