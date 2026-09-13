@@ -289,9 +289,27 @@ h1 {
 }
 .exports {
   display: flex;
-  gap: 6px;
+  gap: 18px 28px;
   flex-wrap: wrap;
   margin-top: 22px;
+}
+.action-group {
+  min-width: 0;
+}
+.action-label {
+  display: block;
+  color: var(--muted);
+  margin-bottom: 8px;
+  font:
+    400 15px/1.4 Antonio,
+    sans-serif;
+  text-transform: uppercase;
+}
+.action-group:first-child button:not(.primary) {
+  background: var(--secondary);
+}
+.action-group:first-child button:hover {
+  background: var(--bright);
 }
 .exports button {
   font-size: 17px;

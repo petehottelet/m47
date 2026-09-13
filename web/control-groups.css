@@ -1,0 +1,28 @@
+/* A bank is one task: square internal cells, black gutters, rounded outer ends. */
+.control-bank {
+  display: flex;
+  gap: 3px;
+  min-width: 0;
+}
+.control-bank > button,
+.control-bank > a {
+  border-radius: 0;
+  min-height: 44px;
+  flex: 1 1 auto;
+  white-space: nowrap;
+}
+.control-bank > :first-child {
+  border-radius: 24px 0 0 24px;
+}
+.control-bank > :last-child {
+  border-radius: 0 24px 24px 0;
+}
+.control-bank > :only-child {
+  border-radius: 24px;
+}
+.control-bank > :focus-visible {
+  position: relative;
+  z-index: 1;
+  outline-color: var(--ground, #000);
+  outline-offset: -5px;
+}

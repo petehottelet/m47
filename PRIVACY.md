@@ -33,6 +33,17 @@ may retain the URL. Only share content you intend to disclose.
 The CLI reads local files and writes requested outputs; it makes no network calls.
 Installing dependencies through npm involves the registry as usual.
 
+The optional Google-inspired search concept sends your query directly to Google
+in a new tab only when you submit the search form. It does not save queries or
+request remote suggestions. Example-search buttons fill the input locally.
+Links to Google services follow those services' own privacy policies.
+
+The YouTube concept requests thumbnails from YouTube's image servers. Selecting a
+video loads YouTube's embedded player; search opens YouTube in a new tab. Those
+requests are governed by YouTube's policies. Watch Later stores only selected
+video IDs in local browser storage. M47 does not receive this list. Remove saved
+items with their bookmark buttons, or clear the site's browser data.
+
 ## Controls and contact
 
 Clear site overrides in the popup. Uninstall an extension to remove its local data.

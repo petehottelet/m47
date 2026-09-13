@@ -11,6 +11,10 @@ Antonio font: SIL Open Font License 1.1; see fonts/OFL.txt in browser bundles,
 or extension/fonts/OFL.txt in source and npm/skill packages.
 No third-party trademark or design rights are granted by the MIT license.
 
+Google and YouTube demo concepts are unaffiliated with Google or NASA. Video and
+thumbnail media retain their respective rights; M47's license does not relicense
+them. Demo screenshots may show third-party thumbnails as part of the interface.
+
 M47 itself is distributed free, without ads or paid tiers. This describes the
 project's operation and does not add a non-commercial restriction to MIT.
 

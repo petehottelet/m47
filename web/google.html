@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Google's familiar search homepage, reimagined in M47's retro terminal style. A local, unofficial concept."
+    />
+    <title>Google × M47 — search concept</title>
+    <link rel="preload" href="fonts/Antonio.ttf" as="font" type="font/ttf" crossorigin />
+    <link rel="icon" href="icon.png" />
+    <link rel="stylesheet" href="google.css" />
+  </head>
+  <body>
+    <a class="skip" href="#query">Skip to search</a>
+    <header class="masthead">
+      <a class="m47-mark" href="./" aria-label="Back to M47 workshop">M<span>47</span></a>
+      <span class="edition">GOOGLE / M47 EDITION</span>
+      <nav class="utilities" aria-label="Google services">
+        <a href="https://mail.google.com/" target="_blank" rel="noopener noreferrer">Gmail</a>
+        <a href="https://images.google.com/" target="_blank" rel="noopener noreferrer">Images</a>
+        <details class="apps">
+          <summary aria-label="Google apps" title="Google apps">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M4 4h2v2H4zM11 4h2v2h-2zM18 4h2v2h-2zM4 11h2v2H4zM11 11h2v2h-2zM18 11h2v2h-2zM4 18h2v2H4zM11 18h2v2h-2zM18 18h2v2h-2z"
+              />
+            </svg>
+          </summary>
+          <nav class="app-links" aria-label="More Google services">
+            <a href="https://mail.google.com/" target="_blank" rel="noopener noreferrer"
+              >Gmail <span>↗</span></a
+            >
+            <a href="https://images.google.com/" target="_blank" rel="noopener noreferrer"
+              >Images <span>↗</span></a
+            >
+            <a href="https://www.google.com/" target="_blank" rel="noopener noreferrer"
+              >Search <span>↗</span></a
+            >
+            <a href="https://maps.google.com/" target="_blank" rel="noopener noreferrer"
+              >Maps <span>↗</span></a
+            >
+            <a href="https://www.youtube.com/" target="_blank" rel="noopener noreferrer"
+              >YouTube <span>↗</span></a
+            >
+            <a href="https://drive.google.com/" target="_blank" rel="noopener noreferrer"
+              >Drive <span>↗</span></a
+            >
+            <a href="https://calendar.google.com/" target="_blank" rel="noopener noreferrer"
+              >Calendar <span>↗</span></a
+            >
+          </nav>
+        </details>
+      </nav>
+    </header>
+    <div class="console-frame">
+      <div class="top-elbow" aria-hidden="true"><span>SEARCH / GOOGLE.COM</span></div>
+      <aside class="rail" aria-label="Explore">
+        <a class="rail-current" href="google.html" aria-current="page">SEARCH</a>
+        <a href="https://images.google.com/" target="_blank" rel="noopener noreferrer">IMAGES</a>
+        <a href="https://maps.google.com/" target="_blank" rel="noopener noreferrer">MAPS</a>
+        <a href="./">WORKSHOP</a>
+        <div class="rail-fill" aria-hidden="true"><span>M47</span></div>
+      </aside>
+      <main id="search" class="search-panel">
+        <div class="search-content">
+          <h1 aria-label="Google">
+            <span aria-hidden="true"
+              ><span>G</span><span>o</span><span>o</span><span>g</span><span>l</span
+              ><span>e</span></span
+            >
+          </h1>
+          <p class="concept-label">A familiar search. A different universe.</p>
+          <form
+            action="https://www.google.com/search"
+            method="get"
+            target="_blank"
+            rel="noopener noreferrer"
+            role="search"
+            aria-label="Search Google"
+          >
+            <label class="sr-only" for="query">Search the web</label>
+            <div class="search-field">
+              <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="10.5" cy="10.5" r="6.5" />
+                <path d="m16 16 5 5" />
+              </svg>
+              <input
+                id="query"
+                name="q"
+                type="search"
+                placeholder="Search the web"
+                required
+                maxlength="2000"
+                autocomplete="off"
+                enterkeyhint="search"
+                aria-describedby="search-note"
+              />
+              <button
+                class="clear"
+                type="button"
+                aria-label="Clear search"
+                title="Clear search"
+                hidden
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
+              </button>
+              <span class="key-hint" aria-hidden="true">/</span>
+            </div>
+            <div class="search-actions">
+              <button class="primary" type="submit">Google Search</button>
+              <button type="submit" name="btnI" value="I'm Feeling Lucky">I'm Feeling Lucky</button>
+            </div>
+            <p id="search-note">
+              Opens Google in a new tab. Your query is sent only when you search.
+            </p>
+          </form>
+          <div class="suggestions" aria-label="Try an example search">
+            <span>Try a little curiosity</span>
+            <button type="button" data-query="James Webb telescope images">Webb telescope</button>
+            <button type="button" data-query="mid century architecture">Architecture</button>
+            <button type="button" data-query="deep sea creatures">Deep sea</button>
+          </div>
+        </div>
+      </main>
+      <div class="bottom-elbow" aria-hidden="true"><span>THE WEB IS YOURS TO EXPLORE</span></div>
+    </div>
+    <footer>
+      <p>Local M47 concept. Not affiliated with Google.</p>
+      <nav aria-label="Footer">
+        <a href="youtube.html">YouTube example</a>
+        <a href="./">Interface workshop</a><a href="privacy.html">M47 privacy</a
+        ><a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer"
+          >Google privacy</a
+        >
+      </nav>
+    </footer>
+    <script type="module" src="google.js"></script>
+  </body>
+</html>

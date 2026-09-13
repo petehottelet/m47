@@ -34,6 +34,12 @@ test('release archives contain legal files, expected permissions and valid check
         'm47/core/index.js',
         'm47/cli/index.js',
         'm47/reference/tokens.json',
+        'm47/reference/control-groups.css',
+        'm47/reference/control-groups.md',
+        'm47/reference/demos/google.html',
+        'm47/reference/demos/youtube.html',
+        'm47/reference/demos/youtube.js',
+        'm47/reference/demos/fonts/OFL.txt',
       ])
         assert.ok(files[file], file);
     } else {

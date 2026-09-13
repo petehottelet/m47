@@ -13,6 +13,7 @@
     <link rel="icon" href="icon.png" />
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="stylesheet" href="app.css" />
+    <link rel="stylesheet" href="control-groups.css" />
   </head>
   <body>
     <a class="skip" href="#workspace">Skip to workshop</a>
@@ -96,10 +97,21 @@
             </div>
           </div>
           <div class="exports" aria-label="Export panel">
-            <button id="export-html" class="primary">Export HTML</button
-            ><button id="export-svg">SVG</button><button id="export-png">PNG</button
-            ><button id="export-css">Theme CSS</button><button id="copy">Copy HTML</button
-            ><button id="share">Copy share link</button>
+            <div class="action-group">
+              <span id="export-label" class="action-label">Export file</span>
+              <div class="control-bank" role="group" aria-labelledby="export-label">
+                <button id="export-html" class="primary" aria-label="Export HTML">HTML</button>
+                <button id="export-svg" aria-label="Export SVG">SVG</button>
+                <button id="export-png" aria-label="Export PNG">PNG</button>
+                <button id="export-css" aria-label="Export theme CSS">CSS</button>
+              </div>
+            </div>
+            <div class="action-group">
+              <span id="copy-label" class="action-label">Copy & share</span>
+              <div class="control-bank" role="group" aria-labelledby="copy-label">
+                <button id="copy">Copy HTML</button><button id="share">Copy share link</button>
+              </div>
+            </div>
           </div>
           <p class="hint">
             HTML scrolls for long content. SVG and PNG use the exact canvas dimensions.
@@ -128,6 +140,8 @@
         </div>
         <div id="gallery"></div>
       </section>
+      <p><a href="google.html">Explore the Google × M47 search concept</a></p>
+      <p><a href="youtube.html">Explore the YouTube × M47 video concept</a></p>
       <button id="tone" class="text-button" type="button">Preview synthesized tone</button>
       <p id="status" class="status" role="status" aria-live="polite">
         Ready. No account, no cloud, no telemetry.

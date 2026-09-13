@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="YouTube reimagined as an M47 LCARS-style video library. Six curated NASA videos, topic filters, and a local watch-later list."
+    />
+    <title>YouTube × M47 — video concept</title>
+    <link rel="preload" href="fonts/Antonio.ttf" as="font" type="font/ttf" crossorigin />
+    <link rel="icon" href="icon.png" />
+    <link rel="stylesheet" href="google.css" />
+    <link rel="stylesheet" href="youtube.css" />
+    <link rel="stylesheet" href="control-groups.css" />
+  </head>
+  <body class="youtube-demo">
+    <a class="skip" href="#library">Skip to videos</a>
+    <header class="masthead">
+      <a class="tube-mark" href="youtube.html" aria-label="YouTube M47 concept home"
+        ><svg viewBox="0 0 48 34" aria-hidden="true">
+          <rect width="48" height="34" rx="12" />
+          <path d="m20 9 13 8-13 8Z" /></svg
+        ><span>YouTube</span><small>M47</small></a
+      >
+      <form
+        class="tube-search"
+        role="search"
+        aria-label="Search YouTube"
+        action="https://www.youtube.com/results"
+        method="get"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <label class="sr-only" for="video-query">Search YouTube</label>
+        <input
+          id="video-query"
+          name="search_query"
+          type="search"
+          required
+          maxlength="2000"
+          placeholder="Search YouTube"
+          autocomplete="off"
+        />
+        <button type="submit" aria-label="Submit YouTube search" title="Opens YouTube in a new tab">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="10.5" cy="10.5" r="6.5" />
+            <path d="m16 16 5 5" />
+          </svg>
+        </button>
+      </form>
+      <a class="workshop-link" href="./">Workshop</a>
+    </header>
+    <div class="console-frame">
+      <div class="top-elbow" aria-hidden="true"><span>VIDEO LIBRARY / YOUTUBE</span></div>
+      <aside class="rail" aria-label="Library navigation">
+        <div class="nav-bank" role="group" aria-label="Library views">
+          <button type="button" data-view="home" aria-pressed="true">HOME</button
+          ><button type="button" data-view="saved" aria-pressed="false">WATCH LATER</button>
+        </div>
+        <nav class="nav-bank examples-nav" aria-label="M47 examples">
+          <a href="google.html">SEARCH</a><a href="./">WORKSHOP</a>
+        </nav>
+        <div class="rail-fill" aria-hidden="true"><span>M47</span></div>
+      </aside>
+      <main id="library" class="video-library">
+        <div class="mobile-library control-bank" role="group" aria-label="Library views on mobile">
+          <button type="button" data-view="home" aria-pressed="true">Home</button
+          ><button type="button" data-view="saved" aria-pressed="false">Watch later</button>
+        </div>
+        <section id="watch" class="watch" aria-labelledby="watch-title" hidden>
+          <div class="watch-heading">
+            <h2 id="watch-title" tabindex="-1"></h2>
+            <button id="close-watch" type="button">Close player</button>
+          </div>
+          <div id="player" class="player"></div>
+          <p>
+            YouTube provides playback. If it is unavailable here,
+            <a id="watch-external" target="_blank" rel="noopener noreferrer"
+              >open this video on YouTube</a
+            >.
+          </p>
+        </section>
+        <div class="library-heading">
+          <div>
+            <h1 id="library-title">A window to the universe.</h1>
+            <p>Six NASA films. One curious afternoon.</p>
+          </div>
+          <span class="collection-tag">CURATED DEMO</span>
+        </div>
+        <div class="library-toolbar">
+          <div class="topic-group">
+            <span id="topic-label" class="group-label">Explore by topic</span>
+            <div id="topics" class="control-bank" role="group" aria-labelledby="topic-label">
+              <button type="button" data-topic="all" aria-pressed="true">All</button
+              ><button type="button" data-topic="earth" aria-pressed="false">Earth</button
+              ><button type="button" data-topic="solar" aria-pressed="false">Solar system</button
+              ><button type="button" data-topic="deep" aria-pressed="false">Deep space</button>
+            </div>
+          </div>
+          <p id="video-count" role="status" aria-live="polite">6 videos</p>
+        </div>
+        <div id="videos" class="video-grid"></div>
+        <div id="empty" class="empty" hidden>
+          <h2>No videos here yet.</h2>
+          <p id="empty-help"></p>
+          <button id="show-all" type="button">Show all videos</button>
+        </div>
+        <p id="video-status" class="video-status" role="status" aria-live="polite"></p>
+        <p class="collection-note">
+          A local collection, not a personalized feed. Thumbnails load from YouTube; the player
+          loads when selected. Watch Later stays on this device.
+        </p>
+        <noscript
+          ><p>
+            Enable JavaScript to browse this collection, or
+            <a href="https://www.youtube.com/@NASA">visit NASA on YouTube</a>.
+          </p></noscript
+        >
+      </main>
+      <div class="bottom-elbow" aria-hidden="true"><span>MAKE TIME FOR DISCOVERY</span></div>
+    </div>
+    <footer>
+      <p>Local M47 concept. Not affiliated with YouTube or NASA.</p>
+      <nav aria-label="Footer">
+        <a href="google.html">Google example</a><a href="./">Interface workshop</a
+        ><a href="privacy.html">Privacy</a>
+      </nav>
+    </footer>
+    <script type="module" src="youtube.js"></script>
+  </body>
+</html>

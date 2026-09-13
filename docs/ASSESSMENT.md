@@ -27,6 +27,11 @@ suite, contradictory privacy copy, and incomplete distribution tooling.
   Real Chromium extension tests cover mode switching without navigation, preservation
   of typed text and later site style changes, reader close, mutation-loop stability,
   and persistent new-tab links with script-URL rejection.
+- Follow-up web concepts add **8 browser checks**, making the current CI suite
+  **20 tests**. They cover Google query submission, no remote autocomplete,
+  YouTube topic filters, persistent Watch Later, lazy player creation and teardown,
+  mobile service access, connected action-bank layout, inset focus contrast, and
+  exact equality of rail width and elbow inset at desktop/mobile sizes.
 - **Mozilla web-ext 10.6.0:** page extension, new-tab extension, and static Firefox
   theme each passed with zero errors, warnings, and notices.
 - **Lighthouse 13.4.1**, local mobile simulation: **99 performance / 100 accessibility /
@@ -34,6 +39,7 @@ suite, contradictory privacy copy, and incomplete distribution tooling.
   hosted-service guarantee or a field performance measurement. Raw report:
   `store-assets/lighthouse.json`. The font-loading layout shift found in the first
   audit was fixed with font preloading and stable layout dimensions.
+  This report predates the Google/YouTube concepts and control regrouping.
 - Desktop and mobile screenshots were visually inspected. Export inspection caught
   and fixed meter-label overlap; a regression test now checks its geometry. Current
   submission images and original promo tiles are in `store-assets/v0.2/`.

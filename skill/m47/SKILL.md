@@ -24,6 +24,17 @@ For integrating an existing app, read [the visual rules](reference/design.md), u
 text, semantic controls, keyboard operation, and the incumbent app's state.
 Restyling must be reversible; do not replace application content with a static mock.
 
+Group related controls into task-based banks using `reference/control-groups.css`;
+read [the grouping rationale](reference/control-groups.md). Use rectangular inner
+cells, capped outer ends, narrow black gutters, and larger gaps between tasks.
+Make elbow cutouts and vertical rails use exactly the same width token.
+
+The release includes `reference/demos/`: the workshop plus Google and YouTube
+adaptation examples. Serve that directory with a local static server to explore
+their interactions. These are labeled concepts, not replacements for those sites.
+The YouTube example requests external thumbnails and user-selected video players;
+normal engine HTML/SVG generation remains offline.
+
 Check output with the CLI's static linter and [the conformance rubric](reference/conformance.json).
 The static check covers only a subset; inspect the actual rendered result at the
 target size and a narrow viewport. Repair clipping and unreadable text. SVG/PNG

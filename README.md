@@ -24,6 +24,11 @@ Open http://127.0.0.1:4747. Choose a gallery example, edit its JSON, and export
 HTML, SVG, PNG, or theme CSS. Drafts stay on your device. Share links contain the
 panel itself in the URL fragment; anyone receiving one can read its contents.
 
+Try the additional Google-inspired search concept at `/google.html`. It applies
+M47's design to a familiar search page and opens real Google results in a new tab.
+The `/youtube.html` example provides a curated NASA video collection, topic
+filters, click-to-load YouTube players, and a Watch Later list stored on this device.
+
 ## Use the engine or CLI
 
 ```sh

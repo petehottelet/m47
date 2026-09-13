@@ -215,11 +215,17 @@ for (const [i, e] of examples.entries())
     join(skill, 'reference/examples', `${i + 1}.html`),
     render(e.spec, { width: e.width, height: e.height, scheme: e.scheme, fontData }),
   );
-await zipDir(join(dist, 'skill'), `m47-v${VERSION}-skill.zip`);
 const web = join(dist, 'web');
 await mkdir(web, { recursive: true });
 await Promise.all([
   bundle('web/app.js', join(web, 'app.js'), 'esm'),
+  bundle('web/google.js', join(web, 'google.js'), 'esm'),
+  bundle('web/youtube.js', join(web, 'youtube.js'), 'esm'),
+  copy('web/youtube.html', join(web, 'youtube.html')),
+  copy('web/youtube.css', join(web, 'youtube.css')),
+  copy('web/control-groups.css', join(web, 'control-groups.css')),
+  copy('web/google.html', join(web, 'google.html')),
+  copy('web/google.css', join(web, 'google.css')),
   copy('web/index.html', join(web, 'index.html')),
   copy('web/app.css', join(web, 'app.css')),
   copy('web/guide.html', join(web, 'guide.html')),
@@ -274,6 +280,13 @@ const assets = [
   'index.html',
   'app.js',
   'app.css',
+  'google.html',
+  'google.css',
+  'google.js',
+  'youtube.html',
+  'youtube.css',
+  'youtube.js',
+  'control-groups.css',
   'guide.html',
   'privacy.html',
   'LICENSE.txt',
@@ -292,6 +305,15 @@ await write(
   `const CACHE='m47-${webHash.digest('hex').slice(0, 12)}';const ASSETS=${JSON.stringify(assets)};self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS))));self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k.startsWith('m47-')&&k!==CACHE).map(k=>caches.delete(k))))));self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||new URL(e.request.url).origin!==self.location.origin)return;e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)));});`,
 );
 await zipDir(web, `m47-v${VERSION}-website.zip`);
+await cp(web, join(skill, 'reference/demos'), { recursive: true });
+await write(
+  join(skill, 'reference/control-groups.md'),
+  (await readFile(join(root, 'docs/CONTROL-GROUPS.md'), 'utf8')).split(
+    /\r?\n## Validation and review/,
+  )[0] + '\n\nWorking browser examples are included in `reference/demos/` in this skill bundle.\n',
+);
+await copy('web/control-groups.css', join(skill, 'reference/control-groups.css'));
+await zipDir(join(dist, 'skill'), `m47-v${VERSION}-skill.zip`);
 await write(join(dist, 'example.json'), JSON.stringify(examples[0].spec, null, 2));
 await write(join(dist, 'preview.html'), render(examples[0].spec, { fontData }));
 const archives = (await readdir(dist)).filter((f) => f.endsWith('.zip')).sort();

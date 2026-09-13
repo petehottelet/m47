@@ -7,6 +7,14 @@ access; a private README or PRIVACY.md cannot serve as a public policy URL.
 
 ## Recommended order
 
+Current readiness:
+
+| Surface | Ready now | Remaining distribution step |
+|---|---|---|
+| Agent skill | Portable ZIP with engine, visual rules, grouped-control CSS, and complete workshop/Google/YouTube demos | Install into the intended agent's skills directory; independent agent evaluation remains |
+| Standalone app | Local static web app/PWA and CLI | Host over HTTPS for public PWA installation; no native Windows `.exe` is produced |
+| Browser extension | Built Chrome/Edge and Firefox packages for local testing | Store submission/review and Firefox signing; examples are web demos, not claims of exact live-site reproduction |
+
 1. Use the local builds and private draft release with invited testers.
 2. Publish `dist/web` to a static host. Its `/privacy.html` is the public policy.
 3. Submit the page extension to Chrome, Firefox, and Edge. Submit the separate
@@ -213,6 +221,11 @@ The skill has its own offline engine, CLI, examples and font. HTML/SVG need Node
 extraction is needed. Package dependencies are installed by npm; generation itself
 uses no network. Test the ten prompts in `reference/evaluation.md` in each agent
 before claiming the original PRD's dual-agent evaluation gate.
+
+The expanded `reference/demos` directory contains the complete static workshop
+and both website concepts. Serve it with a local static server for interactive
+use. `reference/control-groups.css` and `reference/control-groups.md` capture
+task-based button banks and the exact rail-to-elbow alignment rule.
 
 ## Paste-ready page-extension listing
 

@@ -4,6 +4,9 @@ M47 0.2 turns the extension prototype into a shared engine and distribution kit.
 - Static workshop: live JSON editing, gallery, local drafts, import, share links,
   and an installable offline application shell.
 - Portable agent skill with offline engine, font, rubric, and examples.
+- Google and YouTube LCARS-style web concepts, with the complete demos bundled in
+  the portable skill. YouTube provides curated videos and local Watch Later.
+- Task-based export/copy control banks and aligned rail-to-elbow geometry.
 - Browser restyler: local preferences, instant reversible mode switching,
   inherited defaults, reader view, and bounded mutation processing.
 - Separate permission-free new-tab extensions and matching browser themes.
