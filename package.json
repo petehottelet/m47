@@ -45,7 +45,7 @@
   },
   "dependencies": {
     "@resvg/resvg-js": "2.6.2",
-    "linkedom": "0.18.12"
+    "linkedom": "0.18.13"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.13.0",
