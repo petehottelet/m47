@@ -1,6 +1,5 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import { mkdir } from 'node:fs/promises';
 
 test('Google concept keeps input local and submits searches to a new tab', async ({
   page,
@@ -18,8 +17,7 @@ test('Google concept keeps input local and submits searches to a new tab', async
   await expect(page.getByRole('heading', { name: 'Google' })).toBeVisible();
   await page.evaluate(() => document.fonts.ready);
   if (testInfo.project.name === 'chromium') {
-    await mkdir('store-assets/google', { recursive: true });
-    await page.screenshot({ path: 'store-assets/google/desktop.png', fullPage: true });
+    await page.screenshot({ path: testInfo.outputPath('desktop.png'), fullPage: true });
   }
   const query = page.getByRole('searchbox', { name: 'Search the web' });
   await page.getByRole('button', { name: 'Webb telescope' }).click();
@@ -55,8 +53,7 @@ test('Google concept supports mobile, keyboard controls and automated accessibil
   await page.goto('/google.html');
   await page.evaluate(() => document.fonts.ready);
   if (testInfo.project.name === 'chromium') {
-    await mkdir('store-assets/google', { recursive: true });
-    await page.screenshot({ path: 'store-assets/google/mobile.png', fullPage: true });
+    await page.screenshot({ path: testInfo.outputPath('mobile.png'), fullPage: true });
   }
   const query = page.getByRole('searchbox', { name: 'Search the web' });
   await page.keyboard.press('/');
@@ -77,7 +74,7 @@ test('Google concept supports mobile, keyboard controls and automated accessibil
   await page.keyboard.press('Tab');
   await expect(images).toBeFocused();
   if (testInfo.project.name === 'chromium') {
-    await page.screenshot({ path: 'store-assets/google/mobile-menu.png', fullPage: true });
+    await page.screenshot({ path: testInfo.outputPath('mobile-menu.png'), fullPage: true });
   }
   await page.keyboard.press('Escape');
   await expect(page.getByRole('navigation', { name: 'More Google services' })).not.toBeVisible();

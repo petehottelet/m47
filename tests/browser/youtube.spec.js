@@ -1,6 +1,18 @@
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
-import { mkdir } from 'node:fs/promises';
+
+test.beforeEach(async ({ context }) => {
+  await context.route('**/*', (route) => {
+    const url = new URL(route.request().url());
+    if (url.origin === 'http://127.0.0.1:4747') return route.continue();
+    if (url.hostname === 'i.ytimg.com')
+      return route.fulfill({
+        contentType: 'image/svg+xml',
+        body: '<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360"><rect width="640" height="360" fill="#182035"/></svg>',
+      });
+    return route.abort();
+  });
+});
 
 test('YouTube concept filters, persists Watch Later, loads player on selection and submits search', async ({
   page,
@@ -51,7 +63,6 @@ test('grouped controls and continuous frame widths work on desktop and mobile', 
 }, testInfo) => {
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message));
-  if (testInfo.project.name === 'chromium') await mkdir('store-assets/latest', { recursive: true });
   for (const width of [1440, 390]) {
     await page.setViewportSize({ width, height: width === 1440 ? 1000 : 844 });
     for (const route of ['youtube.html', 'google.html']) {
@@ -86,7 +97,7 @@ test('grouped controls and continuous frame widths work on desktop and mobile', 
             ]);
           });
         await page.screenshot({
-          path: `store-assets/latest/${route.replace('.html', '')}-${width}.png`,
+          path: testInfo.outputPath(`${route.replace('.html', '')}-${width}.png`),
           fullPage: true,
         });
       }
@@ -135,7 +146,7 @@ test('grouped controls and continuous frame widths work on desktop and mobile', 
     if (testInfo.project.name === 'chromium')
       await page
         .locator('.exports')
-        .screenshot({ path: `store-assets/latest/control-groups-${width}.png` });
+        .screenshot({ path: testInfo.outputPath(`control-groups-${width}.png`) });
   }
   expect(errors).toEqual([]);
 });
