@@ -19,8 +19,13 @@ black and warm structural colors come directly from the product's pinned style.
 
 Related controls form task-based banks: rectangular inner cells, 3px black gutters,
 rounded outer ends, and a visible functional group label. Put larger gaps between
-unrelated groups; stack whole groups on narrow screens. Export formats and
+independent action groups; stack whole groups on narrow screens. Export formats and
 copy/share are separate tasks. Maintain native button and keyboard behavior.
+
+Within a continuous frame rail, keep every seam at the same 3px gutter, including
+nested navigation groups, filler segments, and both elbow joints. Use the shared
+`--frame-gap` token; grouping must not introduce wider breaks in the rail. Retain
+semantic group labels and color cues, with inset black focus rings on rail controls.
 
 An elbow's inner inset and its vertical rail share the exact same width token.
 Column gutters are not part of either width. Their inner edges must align at
@@ -29,3 +34,13 @@ desktop and mobile sizes, with no step where the vertical run meets the curve.
 The Google and YouTube concepts inherit this system. Surface-specific behavior
 and research are documented in docs/GOOGLE-DEMO.md, docs/YOUTUBE-DEMO.md, and
 docs/CONTROL-GROUPS.md. Their external services are identified explicitly.
+
+Ambient displays inherit the same frame and type hierarchy. Keep composition
+steady between scene changes and label simulated readings visibly. Screensavers may
+animate their frame assembly and run bounded instrument motion (sweeps, waveforms,
+reactor pulses). Preserve animation nodes during data updates; pause all motion and
+requests in hidden tabs. Offer slower and still modes. Reduced motion starts paused
+and disables animations. Public observations belong in a distinct band with source,
+timestamps, and explicit cached, stale or unavailable states. Browser controls may
+recede while idle but must return on pointer or keyboard interaction.
+Screensaver behavior is documented in docs/SCREENSAVER.md.

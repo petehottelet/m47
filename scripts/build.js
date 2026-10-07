@@ -104,7 +104,7 @@ const ff = {
   background: { scripts: ['bg/service_worker.js'] },
   browser_specific_settings: {
     gecko: {
-      id: 'm47@hottelet.com',
+      id: '{2aa51a3f-289f-5aa5-b8a1-94f7a592eea8}',
       strict_min_version: '140.0',
       data_collection_permissions: { required: ['none'] },
     },
@@ -143,7 +143,7 @@ await write(
       ...nt,
       browser_specific_settings: {
         gecko: {
-          id: 'm47-newtab@hottelet.com',
+          id: '{aad7bd38-503b-5bdc-9511-ee70b0a68220}',
           strict_min_version: '140.0',
           data_collection_permissions: { required: ['none'] },
         },
@@ -194,7 +194,7 @@ for (const browser of ['chrome', 'firefox']) {
           },
   };
   if (browser === 'firefox')
-    theme.browser_specific_settings = { gecko: { id: 'm47-theme@hottelet.com' } };
+    theme.browser_specific_settings = { gecko: { id: '{e0f08613-a7c6-5b10-ad67-928b5db03e53}' } };
   await write(join(dir, 'manifest.json'), JSON.stringify(theme, null, 2));
   await zipDir(dir, `m47-v${VERSION}-theme-${browser}.zip`);
 }
@@ -221,6 +221,9 @@ await Promise.all([
   bundle('web/app.js', join(web, 'app.js'), 'esm'),
   bundle('web/google.js', join(web, 'google.js'), 'esm'),
   bundle('web/youtube.js', join(web, 'youtube.js'), 'esm'),
+  bundle('web/screensaver.js', join(web, 'screensaver.js'), 'esm'),
+  copy('web/screensaver.html', join(web, 'screensaver.html')),
+  copy('web/screensaver.css', join(web, 'screensaver.css')),
   copy('web/youtube.html', join(web, 'youtube.html')),
   copy('web/youtube.css', join(web, 'youtube.css')),
   copy('web/control-groups.css', join(web, 'control-groups.css')),
@@ -286,6 +289,9 @@ const assets = [
   'youtube.html',
   'youtube.css',
   'youtube.js',
+  'screensaver.html',
+  'screensaver.css',
+  'screensaver.js',
   'control-groups.css',
   'guide.html',
   'privacy.html',

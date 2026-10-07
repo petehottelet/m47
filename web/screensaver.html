@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Generative LCARS-inspired consoles with eight layouts, eight palettes, animated instruments, and optional public observations."
+    />
+    <title>M47 — Generative screensaver</title>
+    <link rel="icon" href="icon.png" />
+    <link rel="stylesheet" href="screensaver.css" />
+  </head>
+  <body>
+    <main id="display" aria-label="Generative screensaver" tabindex="-1">
+      <p id="loading">Preparing the M47 screensaver…</p>
+    </main>
+    <section id="dock" aria-label="Screensaver controls">
+      <div class="dock-heading">
+        <h1>M47 <span>SCREENSAVER</span></h1>
+        <a href="./">Workshop</a>
+      </div>
+      <div class="settings">
+        <label
+          >Purpose<select id="purpose">
+            <option value="shuffle">Cycle all purposes</option>
+          </select></label
+        >
+        <label
+          >Palette<select id="palette">
+            <option value="auto">Cycle palettes</option>
+            <option value="warm">Warm / classic</option>
+            <option value="gold">Gold / lavender</option>
+            <option value="blue">Blue / amber</option>
+            <option value="electric">Electric / ochre</option>
+            <option value="silver">Silver / ice</option>
+            <option value="violet">Violet / coral</option>
+            <option value="mineral">Mineral / seafoam</option>
+            <option value="sunset">Sunset / rose</option>
+          </select></label
+        >
+        <label
+          >Layout<select id="layout">
+            <option value="auto">Cycle layouts</option>
+            <option value="survey">Survey console</option>
+            <option value="analysis">Nested scanner</option>
+            <option value="telemetry">Panoramic telemetry</option>
+            <option value="split">Twin workstations</option>
+            <option value="reactor">Reactor column</option>
+            <option value="archive">Data archive</option>
+            <option value="radial">Radial scanner</option>
+            <option value="bridge">Bridge stations</option>
+          </select></label
+        >
+        <label
+          >New scene<select id="interval">
+            <option value="15">Every 15 seconds</option>
+            <option value="30" selected>Every 30 seconds</option>
+            <option value="60">Every minute</option>
+            <option value="120">Every 2 minutes</option>
+          </select></label
+        >
+        <label
+          >Brightness<input id="brightness" type="range" min="30" max="100" value="85"
+        /></label>
+        <label
+          >Motion<select id="motion">
+            <option value="full">Animated instruments</option>
+            <option value="calm">Slow instruments</option>
+            <option value="still">No animation</option>
+          </select></label
+        >
+        <label class="feed-setting"
+          >Observation band<select id="feed">
+            <option value="off">Off / simulation only</option>
+            <option value="clock">UTC clock / device time</option>
+            <option value="earthquakes">USGS / earthquakes</option>
+            <option value="space">NOAA / space weather</option>
+          </select></label
+        >
+      </div>
+      <p class="feed-note">
+        Public feeds connect directly to USGS or NOAA every 5 minutes. No key or location needed.
+        Instrument panels remain simulated.
+      </p>
+      <div class="actions">
+        <div class="bank">
+          <button id="pause" type="button">Pause</button
+          ><button id="next" type="button">Next scene</button
+          ><button id="fullscreen" type="button">Fullscreen</button>
+        </div>
+        <span class="keys">Space: pause · N: next · F: fullscreen</span>
+      </div>
+      <p id="status" role="status">
+        All data is simulated. Move the pointer or press Tab to reveal controls.
+      </p>
+    </section>
+    <script type="module" src="screensaver.js"></script>
+  </body>
+</html>

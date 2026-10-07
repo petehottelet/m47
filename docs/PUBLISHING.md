@@ -253,7 +253,7 @@ store pages cannot be modified.
 
 Original fan-made interface project. LCARS interface language created by Michael
 Okuda. Not affiliated with CBS Studios, Paramount, or any rights holder. Code MIT;
-Antonio font SIL OFL. Support: pete@hottelet.com.
+Antonio font SIL OFL. Support: the repository maintainer.
 
 The new-tab and theme listings must describe only their own functionality. Do not
 reuse the page-extension permission declarations for the permission-free new tab

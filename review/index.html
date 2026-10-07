@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>M47 — Element review</title>
+    <link rel="stylesheet" href="review.css" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to specimens</a>
+    <header>
+      <div>
+        <h1>M47 <span>ELEMENT REVIEW</span></h1>
+        <p id="inventory-count"></p>
+      </div>
+      <div class="header-actions">
+        <a href="#catalog">Reference catalogue</a><a href="#layouts">Screen divisions</a
+        ><button id="export">Export decisions</button>
+      </div>
+    </header>
+    <p class="scope">
+      Review only. Your choices and notes stay on this device. Nothing here installs into the
+      screensaver; integration requires your later instruction.
+    </p>
+    <div class="workspace">
+      <aside>
+        <label for="search">Find a component or layout</label
+        ><input id="search" type="search" placeholder="Radial, engine, layout…" />
+        <nav id="families" aria-label="Element families"></nav>
+        <p id="progress" role="status"></p>
+      </aside>
+      <main id="main" tabindex="-1">
+        <div class="toolbar">
+          <label
+            >Palette<select id="palette">
+              <option value="classic">Classic</option>
+              <option value="electric">Electric</option>
+              <option value="silver">Silver</option>
+              <option value="coral">Coral</option>
+            </select></label
+          ><button id="motion" aria-pressed="false">Animate specimens</button
+          ><a href="catalog.md" download>Download catalogue</a
+          ><a href="specimens.zip" download>Download classic SVG set</a>
+        </div>
+        <div id="content"></div>
+      </main>
+    </div>
+    <dialog id="inspect">
+      <button id="close-inspect">Close inspection</button>
+      <div id="large-specimen"></div>
+    </dialog>
+    <script type="module" src="review.js"></script>
+  </body>
+</html>

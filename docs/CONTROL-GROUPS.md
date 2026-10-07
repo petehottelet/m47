@@ -24,6 +24,15 @@ at least 44px. A group is not a tablist unless it actually changes tabs.
 
 Corner rule: a vertical rail and the elbow's inner inset use the same CSS width
 token. Gutters separate elements without changing either element's width.
+Within a continuous frame rail, all seams use one 3px `--frame-gap` token: controls
+within a bank, boundaries between banks, filler segments, and both elbow joints.
+Larger group spacing belongs between independent action banks such as the workshop
+exports, not within the frame. Semantic navigation groups and color cues remain;
+keyboard focus rings sit inside the colored rail controls.
+
+The [rail spacing regression](../tests/browser/frame-spacing.spec.js) measures each
+visible seam in both demos at wide, intermediate, and narrow viewport widths,
+including both sides of the mobile breakpoint. It blocks external requests.
 
 ## Validation and review
 

@@ -15,7 +15,7 @@
 |---|---|
 | **Version** | 0.1 (draft for review) |
 | **Date** | September 12, 2026 |
-| **Author** | Pete Hottelet (pete@hottelet.com), drafted with Claude |
+| **Author** | Pete Hottelet |
 | **Status** | Draft |
 | **Working codename** | `swept` (from "swept corner," the community term for the signature LCARS S-curve/elbow frame shape; see §13.3 Naming) |
 

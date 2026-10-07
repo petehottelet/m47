@@ -6,8 +6,8 @@ test-results/
 playwright-report/
 .env
 .env.*
-!.env.example
 *.tgz
 .vercel/
 .netlify/
 .impeccable/
+00_project_files/

@@ -14,7 +14,8 @@
     ".": "./core/index.js",
     "./tokens": "./core/tokens.json",
     "./feedback": "./core/feedback.js",
-    "./extract": "./core/extract.js"
+    "./extract": "./core/extract.js",
+    "./screensaver": "./core/screensaver.js"
   },
   "files": [
     "core",
@@ -31,11 +32,15 @@
   "scripts": {
     "dev": "node scripts/serve.js",
     "build": "node scripts/build.js",
+    "build:review": "node scripts/build-review.js",
+    "build:screensaver": "node scripts/build-screensaver.js",
+    "build:readme": "node scripts/readme-art.js",
+    "build:readme-demos": "node scripts/readme-demos.js",
     "test": "node --test tests/*.test.js",
-    "test:browser": "playwright test",
+    "test:browser": "npm run build:review && playwright test",
     "check": "npm run build && npm test && npm run test:browser",
-    "format": "prettier --write core cli scripts web extension tests playwright.config.js package.json",
-    "format:check": "prettier --check core cli scripts web extension tests playwright.config.js package.json",
+    "format": "prettier --write core cli scripts web extension review tests playwright.config.js package.json",
+    "format:check": "prettier --check core cli scripts web extension review tests playwright.config.js package.json",
     "prepack": "node --test tests/core.test.js"
   },
   "dependencies": {

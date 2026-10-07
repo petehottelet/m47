@@ -83,13 +83,10 @@
 .youtube-demo .console-frame {
   grid-template-rows: 52px minmax(580px, 1fr) 48px;
 }
-.youtube-demo .rail {
-  gap: 18px;
-}
 .nav-bank {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: var(--frame-gap);
 }
 .nav-bank > button,
 .nav-bank > a {
@@ -476,7 +473,7 @@
     width: 100%;
   }
   #topics > button {
-    padding: 12px 10px;
+    padding: 12px 6px;
     font-size: 15px;
   }
   #video-count {

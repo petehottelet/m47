@@ -15,6 +15,7 @@
   --muted: #b9ae9c;
   --bright: #ffff99;
   --rail: 112px;
+  --frame-gap: 3px;
 }
 * {
   box-sizing: border-box;
@@ -174,7 +175,7 @@ input {
   display: grid;
   grid-template-columns: var(--rail) minmax(0, 1fr);
   grid-template-rows: 58px minmax(440px, 1fr) 52px;
-  gap: 4px;
+  gap: var(--frame-gap);
   flex: 1;
 }
 .top-elbow,
@@ -208,7 +209,11 @@ input {
 .rail {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--frame-gap);
+}
+.rail :is(a, button):focus-visible {
+  outline-color: var(--ground);
+  outline-offset: -5px;
 }
 .rail > a {
   display: flex;
@@ -493,7 +498,6 @@ footer a:hover {
   }
   .console-frame {
     grid-template-rows: 44px minmax(450px, 1fr) 40px;
-    gap: 3px;
   }
   .top-elbow {
     border-top-left-radius: 40px;

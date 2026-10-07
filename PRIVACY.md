@@ -44,8 +44,25 @@ requests are governed by YouTube's policies. Watch Later stores only selected
 video IDs in local browser storage. M47 does not receive this list. Remove saved
 items with their bookmark buttons, or clear the site's browser data.
 
+## Generative screensaver
+
+The screensaver generates instrument readings locally. It does not collect private
+system, location, health, or account data. The optional observation band can show
+device UTC time or request public earthquake observations from USGS and planetary
+Kp readings from NOAA SWPC. Network feeds are off by default. Selecting one sends
+normal HTTPS requests directly to that provider every five minutes while active;
+the provider receives ordinary connection information, including your IP address.
+Requests omit cookies and the referrer. No API key or location permission is used.
+Fetched observations remain in memory and are not stored in the offline cache.
+
+Purpose, palette, layout, motion, feed, timing, and brightness preferences remain
+in local browser storage. Selecting Off stops feed requests. The native Windows
+host uses a dedicated WebView2 profile; page requests allow only bundled content
+and the exact two documented feed endpoints. External navigation remains blocked.
+WebView2 runtime maintenance follows Microsoft's own settings.
+
 ## Controls and contact
 
 Clear site overrides in the popup. Uninstall an extension to remove its local data.
 Reset a workshop draft or clear the website's browser data to remove drafts/cache.
-Contact: pete@hottelet.com.
+Contact: the repository maintainer.
