@@ -9,6 +9,8 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import { renderSVG } from '../core/index.js';
 import { examples } from '../core/examples.js';
+import { meshStyles, ridgeStyles, renderTerrain } from '../core/terrain.js';
+import { topographyStyles, renderTopography } from '../core/topography.js';
 
 // Capture isolated local builds; no personal browser profile or live feeds are used.
 const run = promisify(execFile);
@@ -187,10 +189,32 @@ try {
   }
 
   await page.setViewportSize({ width, height });
+  await page.goto(origin + '/screensaver.html?seed=47');
+  await page.evaluate(() => document.fonts.ready);
+  await capture(
+    page,
+    'demo-screensaver',
+    'M47 / GENERATIVE SCREENSAVER',
+    'CONTROLS / CIRCULAR X',
+    1.5,
+  );
+  await page.locator('#controls-minimize').click();
+  await capture(
+    page,
+    'demo-screensaver',
+    'M47 / GENERATIVE SCREENSAVER',
+    'GEAR / REOPEN CONTROLS',
+    1.5,
+  );
   for (const [layout, purpose, scheme] of [
     ['radial', 'navigation', 'warm'],
+    ['radial', 'engineering', 'gold'],
     ['reactor', 'engineering', 'electric'],
     ['bridge', 'communications', 'blue'],
+    ['telemetry', 'temporal', 'warm'],
+    ['survey', 'warp', 'violet'],
+    ['analysis', 'transporter', 'blue'],
+    ['survey', 'stellar', 'sunset'],
   ]) {
     await page.goto(origin + '/screensaver.html?seed=47');
     await page.bringToFront();
@@ -199,9 +223,8 @@ try {
     await page.locator('#layout').selectOption(layout);
     await page.locator('#brightness').fill('100');
     await page.locator('#brightness').dispatchEvent('input');
+    await page.locator('#controls-minimize').click();
     await page.locator('#display').focus();
-    // Match the app's idle state while recording the animated instruments.
-    await page.evaluate(() => document.body.classList.add('controls-hidden'));
     await page.evaluate(() => document.fonts.ready);
     await expect(page.locator('#dock')).toHaveCSS('opacity', '0');
     await page.waitForFunction(() =>
@@ -217,17 +240,50 @@ try {
     for (let i = 0; i < 24; i++) {
       await capture(
         page,
-        'demo-screensaver',
+        ['temporal', 'warp', 'transporter', 'stellar'].includes(purpose)
+          ? 'demo-operations'
+          : 'demo-screensaver',
         'M47 / GENERATIVE SCREENSAVER',
-        `${layout.toUpperCase()} / SIMULATED SYSTEMS`,
+        `${purpose === 'navigation' ? 'STELLAR SECTOR MAP' : purpose === 'temporal' ? 'TEMPORAL PHASE BANDS' : purpose === 'engineering' && layout === 'radial' ? 'ARC SCANNER' : purpose.toUpperCase()} / ${layout.toUpperCase()}`,
         0.125,
       );
       await page.waitForTimeout(90);
     }
   }
-  console.log('Captured three moving screensaver compositions.');
+  console.log('Captured screensaver controls and eight moving compositions.');
 
   if (!screensaverOnly) {
+    for (const [family, styles, title] of [
+      ['mesh', meshStyles, 'M47 / MESH GRIDS'],
+      ['ridges', ridgeStyles, 'M47 / OSCILLOSCOPE RIDGES'],
+      ['contours', topographyStyles, 'M47 / CONTOUR MAPS'],
+    ]) {
+      for (const style of styles) {
+        for (let frame = 0; frame < (family === 'contours' ? 1 : 16); frame++) {
+          const svg =
+            family === 'contours'
+              ? renderTopography({ style: style.id, width: 960, height: 540 })
+              : renderTerrain({
+                  family,
+                  style: style.id,
+                  width: 960,
+                  height: 540,
+                  time: frame / 4,
+                });
+          await page.setContent(
+            `<!doctype html><html><head><style>body{margin:0;background:#000;display:grid;place-items:center;height:100vh}svg{width:960px;height:540px}</style></head><body>${svg}</body></html>`,
+          );
+          await capture(
+            page,
+            `demo-${family}`,
+            title,
+            `${style.name.toUpperCase()} / SIMULATED`,
+            family === 'contours' ? 2.2 : 0.125,
+          );
+        }
+      }
+      console.log(`Captured all five ${family} styles.`);
+    }
     await page.goto(origin + '/google.html');
     await page.evaluate(() => document.fonts.ready);
     await capture(page, 'demo-interfaces', 'M47 / EVERYDAY INTERFACES', 'SEARCH CONCEPT');
@@ -305,6 +361,8 @@ for (const manifest of manifests) {
     concat + `\nfile '${manifest.frames.at(-1).filename}'\n`,
   );
   const paletteSize = manifest.name === 'demo-screensaver' ? 256 : 128;
+  const frameRate =
+    manifest.name === 'demo-screensaver' ? 6 : manifest.name === 'demo-operations' ? 7 : 8;
   await run(
     'ffmpeg',
     [
@@ -318,7 +376,7 @@ for (const manifest of manifests) {
       '-i',
       'frames.txt',
       '-filter_complex',
-      `[0:v]fps=8,split[a][b];[a]palettegen=max_colors=${paletteSize}:stats_mode=diff[p];[b][p]paletteuse=dither=none:diff_mode=rectangle`,
+      `[0:v]fps=${frameRate},split[a][b];[a]palettegen=max_colors=${paletteSize}:stats_mode=diff[p];[b][p]paletteuse=dither=none:diff_mode=rectangle`,
       '-map_metadata',
       '-1',
       '-loop',

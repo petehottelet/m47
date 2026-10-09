@@ -42,5 +42,18 @@ reactor pulses). Preserve animation nodes during data updates; pause all motion 
 requests in hidden tabs. Offer slower and still modes. Reduced motion starts paused
 and disables animations. Public observations belong in a distinct band with source,
 timestamps, and explicit cached, stale or unavailable states. Browser controls may
-recede while idle but must return on pointer or keyboard interaction.
+recede while idle. A persistent gear provides explicit open/minimize behavior,
+with keyboard access; pointer movement must not reopen a minimized panel.
 Screensaver behavior is documented in docs/SCREENSAVER.md.
+
+Screensaver titles, subtitles, and metric labels occupy separate text bands.
+At the 1440 × 900 source size, standard title/subtitle baselines are 104/134,
+and metric label/value/unit baselines are 162/218/216. Narrow reactor titles
+keep their fitted size. Rectangular scanners and dedicated operations instruments
+share the same palettes and frames; linear scans stay inside the instrument body,
+and grouped phase cells retain their nodes between reading updates.
+
+Instrument labels sit wholly inside solid header bands or in clear open space.
+Keep grid lines and connecting paths outside their text bounds. Berth frames and
+regeneration banks use filled curved elbows, while directional markers use solid
+rounded silhouettes. Distribution buses show capacity in separated data cells.

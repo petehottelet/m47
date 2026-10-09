@@ -1,11 +1,13 @@
 import { random, escape, palette } from './index.js';
+import { operationPurposes, instrumentNames, renderInstrument } from './instruments.js';
+import { renderStarMap } from './star-map.js';
 
 export const purposes = [
   {
     id: 'navigation',
     title: 'STELLAR CARTOGRAPHY',
     station: 'Navigation',
-    diagram: 'orbit',
+    diagram: 'stellar-map',
     channels: ['Deflector', 'Inertial array', 'Course lock', 'Astrometry'],
     metrics: [
       ['Velocity', 0.1, 0.9, 'C'],
@@ -122,7 +124,7 @@ export const purposes = [
     id: 'observatory',
     title: 'DEEP FIELD OBSERVATORY',
     station: 'Observatory',
-    diagram: 'orbit',
+    diagram: 'sky',
     channels: ['Optical array', 'Tracking', 'Calibration', 'Archive'],
     metrics: [
       ['Exposure', 12, 180, 'S'],
@@ -157,6 +159,7 @@ export const purposes = [
     ],
     records: ['Basalt plain', 'Rift margin', 'Crater floor', 'Polar deposit'],
   },
+  ...operationPurposes,
 ];
 export const layouts = [
   'survey',
@@ -195,6 +198,7 @@ export function createScene({
   purpose = 'shuffle',
   scheme = 'auto',
   layout = 'auto',
+  scanners = 'classic',
 } = {}) {
   if (!Number.isSafeInteger(index) || index < 0 || !Number.isSafeInteger(tick) || tick < 0)
     throw new Error('Scene index and tick must be nonnegative integers.');
@@ -209,6 +213,7 @@ export function createScene({
     throw new Error('Unknown screensaver palette.');
   if (layout !== 'auto' && !layouts.includes(layout))
     throw new Error('Unknown screensaver layout.');
+  if (!['classic', 'rectangular'].includes(scanners)) throw new Error('Unknown scanner style.');
   const rng = random(`${String(seed).slice(0, 100)}:${index}`);
   const readings = random(`${String(seed).slice(0, 100)}:${index}:${tick}`);
   const between = (min, max) => min + readings() * (max - min);
@@ -233,6 +238,7 @@ export function createScene({
     title: selected.title,
     station: selected.station,
     diagram: selected.diagram,
+    scanners,
     layout:
       layout === 'auto'
         ? layouts[(index + Math.floor(sequence() * layouts.length)) % layouts.length]
@@ -287,14 +293,14 @@ export function renderScene(scene, { portrait = false, feed = null } = {}) {
     text(x + 20, y + 20, label, 22, c.interactive) +
     line(x, y + 36, x + w, y + 36, c.interactive, 3);
 
-  function scannerSweep(cx, cy, radius, aspect = 1) {
+  function sweepTrail(radius, span = 84) {
     // Overlapping translucent sectors build a smooth angular afterglow without
     // seams, filters, or external images. Only their parent rotates per frame.
     const steps = 48;
     let trail = '',
       previousOpacity = 0;
     for (let i = 0; i < steps; i++) {
-      const angle = ((-84 * (steps - i)) / steps) * (Math.PI / 180);
+      const angle = ((-span * (steps - i)) / steps) * (Math.PI / 180);
       const opacity = 0.38 * ((i + 1) / steps) ** 1.6;
       const layerOpacity = (opacity - previousOpacity) / (1 - previousOpacity);
       const x = (Math.cos(angle) * radius).toFixed(3);
@@ -302,17 +308,140 @@ export function renderScene(scene, { portrait = false, feed = null } = {}) {
       trail += `<path d="M0 0L${x} ${y}A${radius} ${radius} 0 0 1 ${radius} 0Z" opacity="${layerOpacity.toFixed(5)}"/>`;
       previousOpacity = opacity;
     }
-    // Apply the ellipse after rotation so the beam stays inside orbital rings.
-    return `<g class="scan-envelope" transform="translate(${cx} ${cy}) scale(1 ${aspect})"><g class="scan-sweep" style="transform-origin:0px 0px"><g class="scan-trail" fill="${c.data}">${trail}</g>${line(0, 0, radius, 0, c.bright, 2)}</g></g>`;
+    return trail;
+  }
+
+  function arcScanner(x, y, w, h) {
+    const fieldH = h - 38,
+      cx = x + w * 0.29,
+      cy = y + fieldH * 0.54,
+      rx = w * 0.63,
+      ry = fieldH * 0.46;
+    const point = (angle, fraction = 1, inset = 0) => {
+      const a = (angle * Math.PI) / 180;
+      return [
+        cx + Math.cos(a) * (rx * fraction - inset),
+        cy + Math.sin(a) * (ry * fraction - inset),
+      ];
+    };
+    const arc = (a, b, fraction = 1, inset = 0) =>
+      `M${point(a, fraction, inset)}A${rx * fraction - inset} ${ry * fraction - inset} 0 0 1 ${point(b, fraction, inset)}`;
+    const band = (a, b, thickness, color) =>
+      `<path d="${arc(a, b)}L${point(b, 1, thickness)}A${rx - thickness} ${ry - thickness} 0 0 0 ${point(a, 1, thickness)}Z" fill="${color}" stroke="${c.ground}" stroke-width="3"/>`;
+    const curve = (a, b, fraction, color, width = 1) =>
+      `<path d="${arc(a, b, fraction)}" fill="none" stroke="${color}" stroke-width="${width}"/>`;
+    const bracket = (px, py, size, color) => {
+      const edge = size / 2,
+        arm = size * 0.3;
+      return `<path d="M${px - edge} ${py - edge + arm}v${-arm}h${arm}M${px + edge - arm} ${py - edge}h${arm}v${arm}M${px + edge} ${py + edge - arm}v${arm}h${-arm}M${px - edge + arm} ${py + edge}h${-arm}v${-arm}" fill="none" stroke="${color}" stroke-width="2"/>`;
+    };
+    let out = `<g class="arc-scanner" data-bounds="${x} ${y} ${w} ${h}">`;
+    out += `<g class="arc-envelope" transform="translate(${cx} ${cy}) scale(1 ${ry / rx})"><g class="arc-sweep"><g class="arc-trail" fill="${c.data}">${sweepTrail(rx * 0.87, 26)}</g>${line(0, 0, rx * 0.87, 0, c.bright, 1.5)}</g></g>`;
+    out +=
+      band(-104, -58, 16, c.structure) +
+      band(-58, -24, 16, c.secondary) +
+      band(-16, 34, 8, c.interactive) +
+      band(42, 70, 16, c.structure);
+    out +=
+      curve(-96, 63, 0.88, c.interactive) +
+      curve(-78, 48, 0.61, c.interactive) +
+      curve(-51, 64, 0.33, c.data);
+    for (const angle of [-76, -28, 20, 62]) {
+      const start = point(angle, 0.15),
+        end = point(angle, 0.85);
+      out += line(...start, ...end, c.interactive, 1, 'opacity=".28"');
+    }
+    for (let i = 0; i < 25; i++) {
+      const angle = -96 + i * 6.5;
+      out += line(...point(angle, 0.92), ...point(angle, 0.92, i % 4 ? 3 : 7), c.data, 1);
+    }
+    const contacts = [
+      [-70, 0.46],
+      [-45, 0.78],
+      [-22, 0.62],
+      [22, 0.74],
+      [60, 0.52],
+      [14, 0.36],
+      [-83, 0.83],
+    ];
+    contacts.forEach(([bearing, distance], i) => {
+      const angle = bearing + (scene.nodes[i].x - 0.5) * 5,
+        [px, py] = point(angle, distance),
+        selected = i === 2;
+      out += `<g class="arc-contact" data-contact="${i + 1}"${selected ? ' data-selected="true"' : ''}>`;
+      out += bracket(px, py, selected ? 24 : 12, selected ? c.bright : c.data);
+      out += rect(px - 2, py - 2, 4, 4, selected ? c.bright : c.data);
+      if (selected) {
+        out += `<path d="M${px + 15} ${py + 3}l20 18h${w * 0.15}" fill="none" stroke="${c.secondary}" stroke-width="1"/>`;
+        out +=
+          text(px + 39, py + 14, 'TRACK 03', portrait ? 28 : 17, c.bright) +
+          text(
+            px + 39,
+            py + (portrait ? 45 : 39),
+            `${(distance * 8.4).toFixed(1)} LY`,
+            portrait ? 26 : 14,
+            c.data,
+          );
+      }
+      out += '</g>';
+    });
+    out +=
+      text(x + 2, y + 60, '047', 48, c.structure) +
+      text(
+        x + (portrait ? 8 : 2),
+        y + (portrait ? 96 : 83),
+        'AZIMUTH',
+        portrait ? 28 : 14,
+        c.interactive,
+      ) +
+      line(cx - 30, cy, cx - 9, cy, c.secondary, 3) +
+      line(cx, cy - 8, cx, cy + 8, c.secondary, 2) +
+      line(cx - 8, cy, cx + 8, cy, c.secondary, 2) +
+      line(
+        x,
+        y + h - (portrait ? 42 : 28),
+        x + w * 0.37,
+        y + h - (portrait ? 42 : 28),
+        c.secondary,
+        3,
+      ) +
+      text(
+        x + (portrait ? 8 : 0),
+        y + h - (portrait ? 8 : 4),
+        '07 CONTACTS',
+        portrait ? 28 : 17,
+        c.secondary,
+      ) +
+      text(
+        x + w - (portrait ? 8 : 2),
+        y + h - 6,
+        'SECTOR 047 / 8.4 LY',
+        portrait ? 26 : 16,
+        c.data,
+        'text-anchor="end"',
+      );
+    return out + '</g>';
   }
 
   function diagram(x, y, w, h, kind = scene.diagram) {
+    if (scene.purpose === 'navigation' && ['stellar-map', 'radar', 'course'].includes(kind)) {
+      return heading(x, y, w, 'STELLAR SECTOR MAP') + renderStarMap(scene, x, y + 62, w, h - 78);
+    }
+    if (
+      scene.scanners === 'rectangular' &&
+      (kind === 'radar' || (kind === 'spectrum' && scene.purpose === 'geology'))
+    )
+      kind =
+        scene.purpose === 'navigation' ? 'course' : scene.purpose === 'geology' ? 'strata' : 'sky';
+    if (instrumentNames[kind]) {
+      const title = instrumentNames[kind];
+      return `<g class="instrument-panel">${rect(x, y, 8, 24, c.interactive)}${text(x + 20, y + 20, title, Math.min(22, (w - 20) / (title.length * 0.55)), c.interactive)}${line(x, y + 36, x + w, y + 36, c.interactive, 3)}${renderInstrument(scene, kind, x, y + 52, w, h - 66)}</g>`;
+    }
     let out = heading(
       x,
       y,
       w,
       {
-        orbit: 'SPATIAL REFERENCE',
         spectrum: 'FREQUENCY RESPONSE',
         grid: 'SECTOR DISTRIBUTION',
         network: 'RELAY TOPOLOGY',
@@ -325,29 +454,9 @@ export function renderScene(scene, { portrait = false, feed = null } = {}) {
     y += 62;
     h -= 78;
     const cx = x + w / 2,
-      cy = y + h / 2,
-      radius = Math.min(w * 0.42, h * 0.44);
+      cy = y + h / 2;
     if (kind === 'radar') {
-      out += scannerSweep(cx, cy, radius);
-      for (let i = 1; i <= 4; i++)
-        out += circle(cx, cy, (radius * i) / 4, c.interactive, 'none', 1);
-      for (let i = 0; i < 12; i++) {
-        const a = (i * Math.PI) / 6;
-        out += line(
-          cx + Math.cos(a) * radius * 0.78,
-          cy + Math.sin(a) * radius * 0.78,
-          cx + Math.cos(a) * radius,
-          cy + Math.sin(a) * radius,
-          c.secondary,
-          9,
-        );
-      }
-      scene.nodes.forEach((p, i) => {
-        const a = p.x * Math.PI * 2,
-          r = p.y * radius * 0.75;
-        out += circle(cx + Math.cos(a) * r, cy + Math.sin(a) * r, 3 + (i % 3), c.data, c.data);
-      });
-      out += text(x, y + 20, 'AZ 047 / EL 012', 16) + text(x, y + h, 'RANGE 8.4 LY', 16);
+      out += arcScanner(x, y, w, h);
     } else if (kind === 'reactor') {
       const rw = Math.min(w * 0.3, 150);
       out += line(cx, y + 8, cx, y + h - 8, c.secondary, 4);
@@ -362,23 +471,6 @@ export function renderScene(scene, { portrait = false, feed = null } = {}) {
       out +=
         circle(cx, cy, rw * 0.37, c.ground, c.ground, 7) +
         circle(cx, cy, rw * 0.26, c.bright, c.bright, 2);
-    } else if (kind === 'orbit') {
-      out += scannerSweep(cx, cy, radius, 0.8);
-      for (const fraction of [0.35, 0.66, 1])
-        out += `<ellipse cx="${cx}" cy="${cy}" rx="${radius * fraction}" ry="${radius * fraction * 0.8}" fill="none" stroke="${c.data}" stroke-width="${fraction === 1 ? 3 : 1}"/>`;
-      out +=
-        line(cx - radius - 18, cy, cx + radius + 18, cy, c.interactive, 1) +
-        line(cx, cy - radius * 0.8 - 18, cx, cy + radius * 0.8 + 18, c.interactive, 1);
-      out += circle(cx, cy, 12, c.secondary, c.secondary);
-      for (let i = 0; i < 5; i++) {
-        const angle = scene.phase + i * 1.26,
-          r = radius * (0.35 + (i % 3) * 0.32);
-        const px = cx + Math.cos(angle) * r,
-          py = cy + Math.sin(angle) * r * 0.8;
-        out +=
-          circle(px, py, 6, c.bright, c.bright) +
-          text(px + 12, py - 10, `REF ${i + 1}`, 15, c.secondary);
-      }
     } else if (kind === 'spectrum' || kind === 'waveform') {
       for (let i = 0; i <= 4; i++)
         out += line(x, y + (h * i) / 4, x + w, y + (h * i) / 4, c.data, 1, 'opacity="0.25"');
@@ -456,20 +548,6 @@ export function renderScene(scene, { portrait = false, feed = null } = {}) {
           circle(node.x, node.y, i === 0 ? 18 : 8, c.secondary, c.ground, 3) +
           text(node.x + 14, node.y - 12, `N${String(i + 1).padStart(2, '0')}`, 15, c.bright);
       });
-    } else {
-      out +=
-        rect(cx - 38, y + 12, 76, h - 24, c.data, 30) +
-        rect(cx - 15, y + 32, 30, h - 64, c.ground, 15);
-      for (let i = 0; i < 4; i++) {
-        const py = y + 24 + (i * (h - 60)) / 3;
-        out += line(x + 20, py + 12, x + w - 20, py + 12, c.secondary, 3);
-        out +=
-          rect(x + 10, py - 4, w * 0.26, 34, c.interactive, 16) +
-          rect(x + w * 0.74 - 10, py - 4, w * 0.26, 34, c.secondary, 16);
-        out +=
-          text(x + 26, py + 20, `BUS ${i + 1}`, 17, c.ground) +
-          text(x + w * 0.74 + 6, py + 20, `${scene.channels[i].value}%`, 17, c.ground);
-      }
     }
     return out;
   }
@@ -487,10 +565,10 @@ export function renderScene(scene, { portrait = false, feed = null } = {}) {
     });
     return out;
   }
-  function records(x, y, w) {
+  function records(x, y, w, pitch = 38) {
     let out = heading(x, y, w, 'OPERATIONS REGISTER');
     scene.records.forEach((item, i) => {
-      const py = y + 67 + i * 38;
+      const py = y + 67 + i * pitch;
       out +=
         text(x, py, item.label.toUpperCase(), 18, c.text) +
         text(x + w, py, item.state, 16, c.data, 'text-anchor="end"');
@@ -514,11 +592,7 @@ export function renderScene(scene, { portrait = false, feed = null } = {}) {
     scene.metrics
       .map((m, i) => {
         const px = x + (i * w) / 3;
-        return (
-          text(px, y, m.label.toUpperCase(), 16, c.text) +
-          text(px, y + 49, m.value, 43, c.secondary) +
-          text(px + Math.min(146, w / 3 - 62), y + 47, m.unit, 18, c.data)
-        );
+        return `<g class="scene-metric">${text(px, y, m.label.toUpperCase(), 16, c.text)}${text(px, y + 56, m.value, 36, c.secondary)}${text(px + Math.min(146, w / 3 - 62), y + 54, m.unit, 18, c.data)}</g>`;
       })
       .join('');
   function bank(x, y, w, rows = 9) {
@@ -574,15 +648,18 @@ export function renderScene(scene, { portrait = false, feed = null } = {}) {
   let content = '',
     furniture = '',
     tx = 40,
-    ty = 96;
+    ty = 104;
+  const primary = (kind) =>
+    operationPurposes.some(({ id }) => id === scene.purpose) ? scene.diagram : kind;
   if (portrait) {
     const mirrored = ['split', 'bridge', 'analysis'].includes(scene.layout);
     const px = mirrored ? 40 : 126;
     furniture = frame(20, 20, 860, 1388, c.structure, mirrored);
     tx = px;
-    const kind =
-      scene.layout === 'radial' ? 'radar' : scene.layout === 'reactor' ? 'reactor' : scene.diagram;
-    content = panel(metrics(px, 157, 720)) + panel(diagram(px, 238, 718, 460, kind), 2);
+    const kind = primary(
+      scene.layout === 'radial' ? 'radar' : scene.layout === 'reactor' ? 'reactor' : scene.diagram,
+    );
+    content = panel(metrics(px, 162, 720)) + panel(diagram(px, 250, 718, 460, kind), 2);
     if (['archive', 'analysis', 'bridge'].includes(scene.layout))
       content += panel(bank(px, 755, 718, 8), 3);
     else content += panel(channels(px, 755, 718), 3);
@@ -591,29 +668,28 @@ export function renderScene(scene, { portrait = false, feed = null } = {}) {
     furniture = frame(20, 20, 1400, 860);
     tx = 122;
     content =
-      panel(metrics(122, 154, 1248)) +
+      panel(metrics(122, 162, 1248)) +
       panel(diagram(122, 250, 775, 475), 2) +
       panel(channels(955, 250, 415), 3) +
       panel(records(955, 544, 415), 4);
   } else if (scene.layout === 'analysis') {
     furniture = frame(344, 20, 1076, 250, c.secondary) + frame(344, 273, 1076, 477, c.structure);
     tx = 436;
-    ty = 83;
     content =
       panel(bank(30, 32, 280, 20), 1) +
-      panel(metrics(436, 155, 920), 2) +
+      panel(metrics(436, 162, 920), 2) +
       panel(diagram(438, 316, 920, 392), 3);
   } else if (scene.layout === 'telemetry') {
     furniture = ribbons(30, 20, 1380) + frame(30, 515, 1380, 235, c.secondary, true);
     content =
-      panel(metrics(40, 150, 1340)) +
+      panel(metrics(40, 162, 1340)) +
       panel(diagram(40, 245, 1340, 238), 2) +
       panel(bank(40, 550, 605, 4), 3) +
-      panel(records(714, 537, 586), 4);
+      panel(records(714, 553, 586, 32), 4);
   } else if (scene.layout === 'split') {
     furniture = frame(20, 232, 698, 518, c.data, true) + frame(721, 232, 699, 518, c.secondary);
     content =
-      panel(metrics(40, 153, 1340)) +
+      panel(metrics(40, 162, 1340)) +
       panel(diagram(45, 282, 570, 417), 2) +
       panel(bank(820, 284, 552, 10), 3);
     furniture += ribbons(40, 20, 1340);
@@ -625,7 +701,7 @@ export function renderScene(scene, { portrait = false, feed = null } = {}) {
     // The narrow center frame reserves its title for the instrument; the purpose sits above the banks.
     content =
       panel(bank(30, 97, 386, 12)) +
-      panel(diagram(558, 160, 366, 542, 'reactor'), 2) +
+      panel(diagram(558, 160, 366, 542, primary('reactor')), 2) +
       panel(channels(1010, 100, 380), 3) +
       panel(records(1010, 437, 380), 4);
   } else if (scene.layout === 'archive') {
@@ -633,25 +709,35 @@ export function renderScene(scene, { portrait = false, feed = null } = {}) {
     content =
       panel(bank(40, 150, 595, 9)) +
       panel(bank(703, 150, 594, 9), 2) +
-      panel(diagram(124, 522, 1230, 177, 'waveform'), 3);
+      panel(diagram(124, 522, 1230, 177, primary('waveform')), 3);
   } else if (scene.layout === 'radial') {
     furniture = frame(20, 20, 760, 730, c.structure) + ribbons(810, 20, 590);
     tx = 122;
     content =
-      panel(diagram(122, 178, 600, 510, 'radar'), 2) +
+      panel(diagram(122, 178, 600, 510, primary('radar')), 2) +
       panel(bank(820, 98, 568, 9), 1) +
       panel(diagram(820, 476, 568, 235, 'spectrum'), 3);
   } else {
     furniture = frame(20, 20, 1400, 730, c.data, true) + ribbons(40, 252, 1270);
     content =
-      panel(metrics(40, 156, 1260)) +
-      panel(diagram(40, 309, 575, 395, 'radar'), 2) +
-      panel(diagram(684, 309, 613, 395), 3);
+      panel(metrics(40, 162, 1260)) +
+      panel(diagram(40, 309, 575, 395, primary('radar')), 2) +
+      panel(
+        diagram(684, 309, 613, 395, instrumentNames[scene.diagram] ? 'spectrum' : scene.diagram),
+        3,
+      );
   }
-  const titleSize = !portrait && scene.layout === 'reactor' ? 25 : portrait ? 34 : 44;
+  const narrowTitle = !portrait && scene.layout === 'reactor';
+  const titleSize = narrowTitle ? 25 : portrait ? 34 : 40;
   const title =
     text(tx, ty, scene.title, titleSize, c.bright) +
-    text(tx, ty + 31, 'SIMULATED SYSTEMS / ' + scene.code, 16, c.interactive);
+    text(
+      tx,
+      narrowTitle ? ty + 31 : 134,
+      'SIMULATED SYSTEMS / ' + scene.code,
+      narrowTitle ? 16 : 14,
+      c.interactive,
+    );
   // Real observations occupy a separate band, never the simulated instrument channels.
   const fx = portrait ? 126 : scene.layout === 'survey' ? 122 : 40,
     fy = height - (portrait ? 102 : 115),
@@ -678,6 +764,6 @@ export function renderScene(scene, { portrait = false, feed = null } = {}) {
     <title id="scene-title">${escape(scene.title)}</title><desc id="scene-desc">Randomized ${escape(scene.station)} console. ${feed ? 'Instrument readings are simulated. Separate public observation band: ' + escape(feed.label + '. ' + feed.summary + '. ' + feed.detail) : 'All readings are simulated.'} ${escape(scene.metrics.map((m) => `${m.label}: ${m.value} ${m.unit}`).join('; '))}.</desc>
     <g font-family="Antonio, sans-serif" font-weight="400">
     ${rect(0, 0, width, height, c.ground)}${furniture}${panel(title, 0)}${content}<g id="observation-band">${feedMarkup}</g>
-    ${text(width - (portrait ? 105 : 40), height - 25, `M47 / ${scene.layout.toUpperCase()} / ${scene.scheme.toUpperCase()}`, 14, !portrait && scene.layout === 'survey' ? c.ground : c.bright, 'text-anchor="end"')}
+    ${text(width - (portrait ? 105 : 40), height - 25, `M47 / ${scene.layout === 'radial' ? 'ARC SCANNER' : scene.layout.toUpperCase()} / ${scene.scheme.toUpperCase()}`, 14, !portrait && scene.layout === 'survey' ? c.ground : c.bright, 'text-anchor="end"')}
     </g></svg>`;
 }

@@ -13,19 +13,67 @@ Antonio display type, and cool data. All example readings are demonstration data
 <a name="animated-demos"></a>
 <h2><img src="docs/assets/section-motion.svg" alt="See M47 in motion" width="480"></h2>
 
-Five short loops from M47's working interfaces. All instrument readings are
+Nine short loops from M47's working interfaces. All instrument readings are
 demonstration data. Expand a preview to watch; each includes a still-image link.
 
 <details open>
-<summary><strong>Generative screensaver — radial scanner, reactor column, bridge stations</strong></summary>
+<summary><strong>Generative screensaver — sector map, arc scanner, reactor, and bridge</strong></summary>
 
 <picture>
   <source media="(prefers-reduced-motion: reduce)" srcset="docs/assets/demo-screensaver.png">
-  <img src="docs/assets/demo-screensaver.gif" alt="Animated M47 screensaver cycling through a warm radial navigation scanner, an ochre engineering reactor, and blue communications bridge stations. All readings are simulated." width="1000">
+  <img src="docs/assets/demo-screensaver.gif" alt="M47's gear and circular close controls, stellar sector map, asymmetric arc scanner, reactor, and bridge stations. All readings are simulated." width="1000">
 </picture>
 
 Moving scans, instrument traces, and changing compositions in the
 [generative screensaver](docs/SCREENSAVER.md). [View a still](docs/assets/demo-screensaver.png).
+
+</details>
+
+<details>
+<summary><strong>Operations — temporal phase bands, warp coils, transporter, and stellar population</strong></summary>
+
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="docs/assets/demo-operations.png">
+  <img src="docs/assets/demo-operations.gif" alt="Animated M47 temporal phase bands, paired nacelle coils, transporter phase columns and buffer, and stellar population plot. All readings are simulated." width="1000">
+</picture>
+
+[Explore the screensaver instruments](docs/SCREENSAVER.md). [View a still](docs/assets/demo-operations.png).
+
+</details>
+
+<details>
+<summary><strong>Mesh grids — five moving terrain fields</strong></summary>
+
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="docs/assets/demo-mesh.png">
+  <img src="docs/assets/demo-mesh.gif" alt="Five moving M47 mesh grids: alpine, tidal, caldera, fault, and dunes. Simulated terrain." width="1000">
+</picture>
+
+[Explore the instrument gallery](docs/INSTRUMENTS.md). [View a still](docs/assets/demo-mesh.png).
+
+</details>
+
+<details>
+<summary><strong>Oscilloscope ridges — five animated signal fields</strong></summary>
+
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="docs/assets/demo-ridges.png">
+  <img src="docs/assets/demo-ridges.gif" alt="Five M47 oscilloscope ridge displays: carrier, pulse, seismic, harmonic, and interference. Simulated signals." width="1000">
+</picture>
+
+[Explore the instrument gallery](docs/INSTRUMENTS.md). [View a still](docs/assets/demo-ridges.png).
+
+</details>
+
+<details>
+<summary><strong>Contour maps — five topographical styles</strong></summary>
+
+<picture>
+  <source media="(prefers-reduced-motion: reduce)" srcset="docs/assets/demo-contours.png">
+  <img src="docs/assets/demo-contours.gif" alt="M47 contour styles cycling through survey, abyssal, volcanic, glacial, and dunes. Each map is static simulated terrain." width="1000">
+</picture>
+
+[Explore the topography atlas](docs/TOPOGRAPHY.md). [View a still](docs/assets/demo-contours.png).
 
 </details>
 
@@ -116,13 +164,21 @@ The `/youtube.html` example provides a curated NASA video collection, topic
 filters, click-to-load YouTube players, and a Watch Later list stored on this device.
 
 The [generative screensaver](docs/SCREENSAVER.md) at `/screensaver.html` cycles
-twelve simulated purposes through orbital maps, spectra, grids, networks,
+twenty simulated purposes through stellar maps, spectra, grids, networks,
 waveforms, and system diagrams. Eight frame compositions and eight palettes include
-nested scanners, twin workstations, radial displays, and reactor columns. Frames
+nested scanners, twin workstations, arc scanners, and reactor columns. Frames
 animate in; instruments stay in motion. Optional USGS earthquake and NOAA space-weather
 observations appear in a separate, timestamped band. Adjust layout, motion, brightness,
-and timing, then enter fullscreen. A native Windows `.scr` package is available with
+and timing, then enter fullscreen. Rectangular scans offer navigation vectors, deep-field
+imaging, and tomography; eight operations subjects add nacelle coils, transporter
+buffers, biometric traces, and other dedicated instruments. A native Windows `.scr` package is available with
 `npm run build:screensaver` after the normal build; see the guide for installation.
+
+The [instrument gallery](docs/INSTRUMENTS.md) at `/instruments.html` includes five
+mesh grids, five oscilloscope ridge fields, five contour maps, and the asymmetric
+arc scanner and stellar sector map. Compare families, expand previews, pause motion, and save SVGs.
+The [terrain atlas](docs/TOPOGRAPHY.md) at `/topography.html` focuses on the five
+contour styles; `npm run build:topography` exports their SVGs and PNGs.
 
 </details>
 

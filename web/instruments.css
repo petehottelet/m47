@@ -1,0 +1,164 @@
+#instruments {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 36px 24px;
+}
+#instruments article:first-child {
+  grid-column: auto;
+}
+#instruments article[hidden] {
+  display: none;
+}
+#instruments article.expanded {
+  grid-column: 1 / -1;
+}
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+}
+nav button {
+  border-radius: 0;
+  background: #cc99cc;
+}
+nav button:first-child {
+  border-radius: 24px 0 0 24px;
+}
+nav button:last-child {
+  border-radius: 0 24px 24px 0;
+}
+nav button[aria-pressed='true'] {
+  background: #ffcc66;
+}
+#playback {
+  background: #99ccff;
+  min-width: 128px;
+}
+.gallery-status {
+  font-size: 13px;
+  color: #b9ae9c;
+  margin: 20px 0 28px;
+}
+.instrument-view {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-top: 5px solid var(--map-color);
+}
+.instrument-view canvas,
+.instrument-view svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.instrument-view .topography {
+  height: auto;
+}
+.instrument-view .arc-scanner {
+  font-family: Antonio, sans-serif;
+}
+.instrument-view .arc-sweep {
+  transform-origin: 0 0;
+  transform: rotate(-12deg);
+  animation: gallery-sweep 8s ease-in-out infinite alternate;
+}
+@keyframes gallery-sweep {
+  from {
+    transform: rotate(-78deg);
+  }
+  to {
+    transform: rotate(68deg);
+  }
+}
+body.gallery-paused .arc-sweep,
+body.gallery-hidden .arc-sweep {
+  animation-play-state: paused;
+}
+.stellar-course {
+  stroke-dasharray: 12 8;
+  animation: gallery-course 12s linear infinite;
+}
+@keyframes gallery-course {
+  to {
+    stroke-dashoffset: -200;
+  }
+}
+body.gallery-paused .stellar-course,
+body.gallery-hidden .stellar-course {
+  animation-play-state: paused;
+}
+#instruments h2 {
+  font-size: 26px;
+}
+#instruments .caption {
+  display: block;
+}
+.instrument-actions {
+  display: flex;
+  gap: 3px;
+  margin-top: 18px;
+}
+.instrument-actions button {
+  border-radius: 0;
+}
+.instrument-actions button:first-child {
+  border-radius: 24px 0 0 24px;
+}
+.instrument-actions button:last-child {
+  border-radius: 0 24px 24px 0;
+}
+.recent {
+  margin-top: 56px;
+  border-top: 14px solid #ff9966;
+  padding-top: 24px;
+}
+.recent p {
+  font-size: 14px;
+  color: #b9ae9c;
+  line-height: 1.5;
+}
+.recent img {
+  display: block;
+  width: min(100%, 1000px);
+  height: auto;
+}
+@media (max-width: 1100px) {
+  #instruments {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 700px) {
+  .instrument-actions .expand {
+    display: none;
+  }
+  .instrument-actions button.export {
+    border-radius: 24px;
+  }
+  #instruments {
+    grid-template-columns: 1fr;
+  }
+  nav {
+    width: 100%;
+  }
+  nav button {
+    flex-grow: 1;
+    padding-inline: 12px;
+  }
+  .intro span {
+    line-height: 1.5;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stellar-course {
+    animation: none;
+  }
+  .instrument-view .arc-sweep {
+    animation: none;
+  }
+}

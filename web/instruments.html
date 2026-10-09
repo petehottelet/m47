@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <title>M47 — Instrument gallery</title>
+    <link rel="stylesheet" href="topography.css" />
+    <link rel="stylesheet" href="instruments.css" />
+  </head>
+  <body>
+    <header>
+      <h1>M47 / INSTRUMENT GALLERY</h1>
+      <a href="./">Workshop</a>
+    </header>
+    <main>
+      <div class="intro">
+        <p>Terrain, signals, and long-range scans.</p>
+        <span>15 terrain variants + stellar cartography and the arc scanner</span>
+      </div>
+      <div class="toolbar">
+        <nav aria-label="Instrument families">
+          <button type="button" data-family="all" aria-pressed="true">All 17</button>
+          <button type="button" data-family="mesh" aria-pressed="false">Mesh grids 5</button>
+          <button type="button" data-family="ridges" aria-pressed="false">
+            Oscilloscope ridges 5
+          </button>
+          <button type="button" data-family="contour" aria-pressed="false">Contour maps 5</button>
+          <button type="button" data-family="scanner" aria-pressed="false">Maps / scans 2</button>
+        </nav>
+        <button type="button" id="playback">Pause motion</button>
+      </div>
+      <p class="gallery-status" id="gallery-status" role="status">
+        All instruments use simulated data. Contour maps are static.
+      </p>
+      <div id="instruments"></div>
+      <noscript>Enable JavaScript to render the instrument gallery.</noscript>
+      <section class="recent" aria-labelledby="recent-title">
+        <h2 id="recent-title">The scanner in context</h2>
+        <p>The updated screensaver composition and README preview.</p>
+        <img
+          id="scene-demo"
+          src="gallery-assets/demo-screensaver.png"
+          alt="Preview of M47 screensaver layouts, including the asymmetric arc scanner"
+        />
+        <p>
+          <a href="screensaver.html">Open the screensaver</a> ·
+          <a href="topography.html">Open the terrain atlas</a>
+        </p>
+      </section>
+    </main>
+    <footer>Rendered locally · SVG exports · M47 colors and letterforms</footer>
+    <script type="module" src="instruments.js"></script>
+  </body>
+</html>

@@ -1,27 +1,54 @@
 # M47 generative screensaver
 
-Randomized LCARS-inspired consoles with twelve purposes: navigation, engineering,
+Randomized LCARS-inspired consoles with twenty purposes: navigation, engineering,
 science, weather, communications, life support, logistics, ocean survey, transport,
-observatory, computing, and geology. Instrument readings are simulated. An optional,
+observatory, computing, geology, tactical analysis, transporter control, warp dynamics,
+medical diagnostics, shuttle operations, environmental systems, temporal mechanics,
+and stellar evolution. Instrument readings are simulated. An optional,
 separately labeled observation band shows public Earth or space-weather data.
 
-Six diagram families include orbital maps, spectra, sector grids, relay networks,
-waveforms, and system schematics; dedicated radial scans and reactor columns add
+Diagram families include stellar sector maps, deep-field imaging, spectra, sector grids,
+relay networks, waveforms, and distribution switchboards; asymmetric arc scans and reactor columns add
 two more instrument treatments. Eight compositions change the frame topology:
 survey console, nested scanner, panoramic telemetry, twin workstations, reactor
-column, data archive, radial scanner, and bridge stations. Portrait screens adapt
+column, data archive, arc scanner, and bridge stations. Portrait screens adapt
 to a vertical console with left or right rails. Elbow tangents and vertical sections
 share their width; adjoining frame segments use uniform 3px gutters.
 With “Cycle all purposes” selected, each cycle visits every purpose before
 repeating. Seeds reproduce a sequence with the same purpose and palette settings.
 The data updates every three seconds without replacing animated SVG nodes. New
 scenes assemble their frames, then reveal instrument banks over about 1.4 seconds.
-Radar and orbital scanners use a rotating filled sweep with a bright leading edge
-and a fading trail. Rings and target markers stay visible above it; orbital sweeps
-follow their elliptical bounds. Spectrum bars, reactor cells and signal traces
+The arc scanner uses an offset origin, broken range bands, and seven bracketed
+contacts with one selected track. Its filled sweep travels back and forth through
+the open sector; a bright leading edge and fading trail remain below the targets.
+Spectrum bars, reactor cells and signal traces
 also continue moving between samples. Choose full, slow, or no animation. Pause freezes movement and readings;
 reduced motion starts paused and disables animation even after resuming updates.
 Hidden tabs stop animation, scene advancement and feed requests. There is no audio.
+
+**Scan instruments** switches between arc/sector instruments and
+rectangular instruments with linear sweeps. Stellar Cartography uses its own
+sector map with four plotted star systems, a highlighted course and range
+readouts. Observatory uses a bracketed star field, and geology uses subsurface sections.
+The preference persists with the other screensaver settings.
+
+Environmental subsystem banks use solid curved elbows, segmented rails, and
+conduits with visible terminals. Temporal frames use broad capped bands with
+nested curved returns and grouped terminal accents. The distribution switchboard has four distinct
+bus lanes with twenty capacity cells and numerical utilization per lane. Shuttle
+berth labels sit within solid rails, clear of the approach grid; the approach
+marker is a filled shape with rounded turns.
+
+The eight operations subjects have dedicated responsive instruments: intercept
+tracks, six transporter phase columns and a nine-row buffer, paired nacelle coils,
+three biometric traces, docking berths, a regeneration circuit, a reference-frame
+cascade, and a stellar population plot. Transporter columns and buffer rows pulse
+as coherent groups. Their geometry remains stable between simulated reading updates,
+and all instruments honor pause, slow, still, hidden-tab and reduced-motion settings.
+
+Shared title and metric bands reserve space between labels, values and units.
+The panoramic telemetry register sits inside its lower frame. These clearances
+apply to compact landscape displays and portrait layouts as well as desktops.
 
 Eight palettes are available: warm/classic, gold/lavender, blue/amber, electric/ochre,
 silver/ice, violet/coral, mineral/seafoam, and sunset/rose. Layout and palette can be
@@ -54,7 +81,12 @@ Both endpoints were checked for successful responses and browser CORS support.
 
 Run `npm run build` and `npm run dev`, then open
 <http://127.0.0.1:4747/screensaver.html>. Choose Fullscreen, or use F. Space pauses;
-N advances. Move the pointer or press Tab to reveal the controls. A URL such as
+N advances. A persistent gear opens or minimizes the controls; the panel also has
+a circular **X** button. S toggles controls and Escape closes them. Tab reaches the
+gear when the panel is closed; Enter or Space activates it. Closed controls stay
+closed while the pointer moves, and their fields leave the keyboard tab order.
+The initial panel recedes after 30 seconds if it is not being used; explicitly
+opened controls remain open until minimized. A URL such as
 `screensaver.html?seed=observatory` reproduces the same generated sequence when
 the purpose and palette settings match; the seed name does not select a purpose.
 Preferences stay in local storage. No account or network feed is needed.

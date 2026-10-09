@@ -16,10 +16,38 @@
     <main id="display" aria-label="Generative screensaver" tabindex="-1">
       <p id="loading">Preparing the M47 screensaver…</p>
     </main>
+    <button
+      id="controls-toggle"
+      type="button"
+      aria-label="Minimize controls"
+      aria-controls="dock"
+      aria-expanded="true"
+      aria-keyshortcuts="S"
+      title="Minimize controls (S)"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path
+          d="m9 2-.6 3-2 .9-2.6-1.1-3 5.2 2.4 1.9v2.2L.8 16l3 5.2 2.6-1.1 2 .9.6 3h6l.6-3 2-.9 2.6 1.1 3-5.2-2.4-1.9v-2.2l2.4-1.9-3-5.2-2.6 1.1-2-.9L15 2Z"
+          transform="translate(0 -1) scale(1 .92)"
+        />
+        <circle cx="12" cy="12" r="3.5" />
+      </svg>
+    </button>
     <section id="dock" aria-label="Screensaver controls">
       <div class="dock-heading">
         <h1>M47 <span>SCREENSAVER</span></h1>
-        <a href="./">Workshop</a>
+        <div class="dock-tools">
+          <a href="./">Workshop</a>
+          <button
+            id="controls-minimize"
+            type="button"
+            aria-label="Minimize controls"
+            title="Minimize controls (Escape)"
+            aria-keyshortcuts="Escape"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17" /></svg>
+          </button>
+        </div>
       </div>
       <div class="settings">
         <label
@@ -49,8 +77,14 @@
             <option value="split">Twin workstations</option>
             <option value="reactor">Reactor column</option>
             <option value="archive">Data archive</option>
-            <option value="radial">Radial scanner</option>
+            <option value="radial">Arc scanner</option>
             <option value="bridge">Bridge stations</option>
+          </select></label
+        >
+        <label
+          >Scan instruments<select id="scanners">
+            <option value="classic">Arc / sector</option>
+            <option value="rectangular">Rectangular / linear</option>
           </select></label
         >
         <label
@@ -90,10 +124,10 @@
           ><button id="next" type="button">Next scene</button
           ><button id="fullscreen" type="button">Fullscreen</button>
         </div>
-        <span class="keys">Space: pause · N: next · F: fullscreen</span>
+        <span class="keys">Space: pause · N: next · F: fullscreen · S: controls</span>
       </div>
       <p id="status" role="status">
-        All data is simulated. Move the pointer or press Tab to reveal controls.
+        All data is simulated. Use the gear or S to open controls; Escape minimizes them.
       </p>
     </section>
     <script type="module" src="screensaver.js"></script>

@@ -56,7 +56,7 @@ test('every purpose renders self-contained, labeled SVG in landscape and portrai
       }
     }
   }
-  assert.equal(diagrams.size, 6);
+  assert.equal(diagrams.size, 15);
 });
 
 test('screensaver rejects unknown settings and invalid counters', () => {
@@ -64,6 +64,7 @@ test('screensaver rejects unknown settings and invalid counters', () => {
     { purpose: 'missing' },
     { scheme: 'missing' },
     { layout: 'missing' },
+    { scanners: 'missing' },
     { index: -1 },
     { index: NaN },
     { tick: 0.5 },
@@ -71,38 +72,49 @@ test('screensaver rejects unknown settings and invalid counters', () => {
     assert.throws(() => createScene(options));
 });
 
-test('radar and orbital scanners have a filled fading trail and a single leading edge', () => {
-  for (const layout of ['radial', 'bridge', 'survey']) {
+test('removed orbital instrument cannot return in any purpose, layout or orientation', () => {
+  for (const purpose of purposes)
+    for (const layout of layouts)
+      for (const portrait of [false, true]) {
+        const doc = new DOMParser().parseFromString(
+          renderScene(createScene({ purpose: purpose.id, layout }), { portrait }),
+          'image/svg+xml',
+        );
+        assert.equal(doc.querySelectorAll('.scan-sweep,.scan-envelope,ellipse').length, 0);
+        assert.doesNotMatch(doc.querySelector('svg').textContent, /SPATIAL REFERENCE/);
+      }
+});
+
+test('arc scanners use open bands and seven bracketed contacts with one selected track', () => {
+  for (const scheme of saverPalettes) {
     for (const portrait of [false, true]) {
-      const scene = createScene({ layout, purpose: 'navigation' });
+      const scene = createScene({ purpose: 'engineering', layout: 'radial', scheme });
       const doc = new DOMParser().parseFromString(
         renderScene(scene, { portrait }),
         'image/svg+xml',
       );
-      const sweeps = doc.querySelectorAll('.scan-sweep');
-      assert.ok(sweeps.length > 0);
-      for (const sweep of sweeps) {
-        const layers = [...sweep.querySelectorAll('.scan-trail path')];
-        assert.ok(layers.length > 1, 'A scanner must illuminate an area, not just draw rays.');
-        assert.equal(sweep.querySelector('.scan-trail').getAttribute('fill'), scene.colors.data);
-        let accumulated = 0;
-        for (const layer of layers) {
-          const opacity = Number(layer.getAttribute('opacity'));
-          assert.ok(opacity > 0 && opacity < 0.05, 'Individual layers must fade smoothly.');
-          accumulated += (1 - accumulated) * opacity;
-          assert.match(layer.getAttribute('d'), /^M0 0L.+A.+Z$/, 'Trail sectors must be closed.');
-        }
-        assert.ok(
-          accumulated > 0.3 && accumulated < 0.5,
-          'The sweep stays visible and translucent.',
-        );
-        const edges = sweep.querySelectorAll('line');
-        assert.equal(edges.length, 1, 'One leading edge replaces the old pair of rays.');
-        assert.equal(edges[0].getAttribute('x1'), '0');
-        assert.equal(edges[0].getAttribute('y1'), '0');
-        assert.equal(edges[0].getAttribute('y2'), '0');
-        assert.ok(Number(edges[0].getAttribute('x2')) > 0);
-      }
+      const scanner = doc.querySelector('.arc-scanner');
+      assert.ok(scanner);
+      assert.equal(scanner.querySelectorAll('circle, ellipse').length, 0);
+      assert.equal(scanner.querySelectorAll('.arc-contact').length, 7);
+      assert.equal(scanner.querySelectorAll('[data-selected="true"]').length, 1);
+      assert.match(scanner.textContent, /TRACK 03/);
+      assert.match(scanner.textContent, /07 CONTACTS/);
+      if (portrait)
+        for (const label of scanner.querySelectorAll('text'))
+          assert.ok(
+            Number(label.getAttribute('font-size')) >= 26,
+            'Portrait readouts must remain legible.',
+          );
+      assert.ok(scanner.querySelectorAll('.arc-trail path').length > 1);
+      assert.equal(scanner.querySelector('.arc-trail').getAttribute('fill'), scene.colors.data);
+      const updated = new DOMParser().parseFromString(
+        renderScene(createScene({ purpose: 'engineering', layout: 'radial', scheme, tick: 1 }), {
+          portrait,
+        }),
+        'image/svg+xml',
+      );
+      assert.equal(scanner.outerHTML, updated.querySelector('.arc-scanner').outerHTML);
     }
   }
 });

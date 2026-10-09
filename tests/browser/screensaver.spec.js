@@ -15,28 +15,29 @@ test('instrument animation survives readout updates and stops when paused or hid
   page,
 }) => {
   await page.goto('/screensaver.html?seed=motion');
+  await page.locator('#purpose').selectOption('engineering');
   await page.getByRole('combobox', { name: 'Layout', exact: true }).selectOption('radial');
   await page.evaluate(() => {
-    window.sweepBefore = document.querySelector('.scan-sweep');
-    window.trailBefore = document.querySelector('.scan-trail');
+    window.sweepBefore = document.querySelector('.arc-sweep');
+    window.trailBefore = document.querySelector('.arc-trail');
   });
-  await expect(page.locator('.scan-sweep')).toHaveCSS('animation-name', 'scan');
+  await expect(page.locator('.arc-sweep')).toHaveCSS('animation-name', 'arc-scan');
   await page.waitForTimeout(3200);
   expect(
-    await page.evaluate(() => window.sweepBefore === document.querySelector('.scan-sweep')),
+    await page.evaluate(() => window.sweepBefore === document.querySelector('.arc-sweep')),
   ).toBe(true);
   expect(
-    await page.evaluate(() => window.trailBefore === document.querySelector('.scan-trail')),
+    await page.evaluate(() => window.trailBefore === document.querySelector('.arc-trail')),
   ).toBe(true);
   await page.keyboard.press('Tab');
   await page.getByRole('button', { name: 'Pause', exact: true }).click();
-  await expect(page.locator('.scan-sweep')).toHaveCSS('animation-play-state', 'paused');
+  await expect(page.locator('.arc-sweep')).toHaveCSS('animation-play-state', 'paused');
   const time = await page
-    .locator('.scan-sweep')
+    .locator('.arc-sweep')
     .evaluate((node) => node.getAnimations()[0].currentTime);
   await page.waitForTimeout(150);
   expect(
-    await page.locator('.scan-sweep').evaluate((node) => node.getAnimations()[0].currentTime),
+    await page.locator('.arc-sweep').evaluate((node) => node.getAnimations()[0].currentTime),
   ).toBe(time);
   await page.getByRole('button', { name: 'Next scene' }).click();
   await expect(page.locator('#display svg')).not.toHaveClass('enter');
@@ -45,60 +46,86 @@ test('instrument animation survives readout updates and stops when paused or hid
     Object.defineProperty(document, 'hidden', { configurable: true, value: true });
     document.dispatchEvent(new Event('visibilitychange'));
   });
-  await expect(page.locator('.scan-sweep')).toHaveCSS('animation-play-state', 'paused');
+  await expect(page.locator('.arc-sweep')).toHaveCSS('animation-play-state', 'paused');
   await page.evaluate(() => {
     delete document.hidden;
     document.dispatchEvent(new Event('visibilitychange'));
   });
   await page.getByRole('combobox', { name: 'Motion', exact: true }).selectOption('still');
-  await expect(page.locator('.scan-sweep')).toHaveCSS('animation-name', 'none');
+  await expect(page.locator('.arc-sweep')).toHaveCSS('animation-name', 'none');
 });
 
-test('filled scanner sweeps rotate around their centers and stay inside their instruments', async ({
-  page,
-}) => {
-  await page.goto('/screensaver.html?seed=sweep');
-  await page.locator('#purpose').selectOption('navigation');
+test('observatory uses deep-field imaging and no removed orbital instrument', async ({ page }) => {
+  await page.goto('/screensaver.html');
+  await page.locator('#purpose').selectOption('observatory');
   for (const viewport of [
     { width: 1280, height: 800 },
     { width: 390, height: 844 },
   ]) {
     await page.setViewportSize(viewport);
-    for (const layout of ['radial', 'survey']) {
+    for (const layout of ['split', 'survey']) {
       await page.locator('#layout').selectOption(layout);
-      const sample = await page
-        .locator('.scan-sweep')
-        .first()
-        .evaluate((sweep) => {
-          const edge = sweep.querySelector('line');
-          const radius = Number(edge.getAttribute('x2'));
-          const trailBox = sweep.querySelector('.scan-trail').getBBox();
-          const animation = sweep.getAnimations()[0];
-          animation.pause();
-          const transforms = [];
-          const envelope = sweep.parentElement.getScreenCTM();
-          let maximumRadius = 0;
-          for (const time of [0, 4500, 9000, 13500]) {
-            animation.currentTime = time;
-            const matrix = sweep.getScreenCTM();
-            transforms.push(getComputedStyle(sweep).transform);
-            for (const point of [new DOMPoint(0, 0), new DOMPoint(radius, 0)]) {
-              const local = point.matrixTransform(matrix).matrixTransform(envelope.inverse());
-              maximumRadius = Math.max(maximumRadius, Math.hypot(local.x, local.y));
+      await expect(page.locator('[data-instrument="sky"]')).toBeVisible();
+      await expect(page.locator('.scan-sweep,.scan-envelope,ellipse')).toHaveCount(0);
+    }
+  }
+});
+
+test('arc sweep traverses an open sector and every part stays inside its instrument', async ({
+  page,
+}) => {
+  await page.goto('/screensaver.html?seed=arc');
+  await page.locator('#purpose').selectOption('engineering');
+  for (const viewport of [
+    { width: 1280, height: 800 },
+    { width: 390, height: 844 },
+  ]) {
+    await page.setViewportSize(viewport);
+    for (const layout of ['radial', 'bridge']) {
+      await page.locator('#layout').selectOption(layout);
+      if (layout === 'bridge' && viewport.width === 390) continue;
+      await page.evaluate(() => document.fonts.ready);
+      const result = await page.locator('.arc-scanner').evaluate((scanner) => {
+        const [x, y, w, h] = scanner.dataset.bounds.split(' ').map(Number);
+        const sweep = scanner.querySelector('.arc-sweep');
+        const animation = sweep.getAnimations()[0];
+        animation.pause();
+        const transforms = [],
+          outside = [];
+        for (const time of [0, 2000, 4000, 6000, 8000]) {
+          animation.currentTime = time;
+          transforms.push(getComputedStyle(sweep).transform);
+          for (const node of scanner.querySelectorAll('path, line, rect, text')) {
+            const matrix = scanner.getScreenCTM().inverse().multiply(node.getScreenCTM());
+            let points;
+            if (node instanceof SVGGeometryElement) {
+              const length = node.getTotalLength();
+              points = Array.from({ length: 33 }, (_, i) =>
+                node.getPointAtLength((length * i) / 32),
+              );
+            } else {
+              const b = node.getBBox();
+              points = [new DOMPoint(b.x, b.y), new DOMPoint(b.x + b.width, b.y + b.height)];
             }
+            const escaped = points
+              .map((point) => point.matrixTransform(matrix))
+              .filter(
+                (p) => p.x < x - 0.1 || p.y < y - 0.1 || p.x > x + w + 0.1 || p.y > y + h + 0.1,
+              );
+            if (escaped.length)
+              outside.push({
+                node: node.tagName,
+                text: node.textContent,
+                time,
+                bounds: [x, y, w, h],
+                escaped: escaped.map((p) => [p.x, p.y]),
+              });
           }
-          return {
-            radius,
-            maximumRadius,
-            trailWidth: trailBox.width,
-            trailHeight: trailBox.height,
-            uniqueTransforms: new Set(transforms).size,
-          };
-        });
-      expect(sample.trailWidth).toBeGreaterThan(sample.radius * 0.8);
-      expect(sample.trailHeight).toBeGreaterThan(sample.radius * 0.8);
-      expect(sample.uniqueTransforms).toBe(4);
-      expect(sample.maximumRadius).toBeLessThanOrEqual(sample.radius + 0.1);
+        }
+        return { outside, unique: new Set(transforms).size };
+      });
+      expect(result.outside).toEqual([]);
+      expect(result.unique).toBe(5);
     }
   }
 });
@@ -138,7 +165,8 @@ test('public observations are opt-in, sourced, cached on failure and removable',
   await page.clock.runFor(303_000);
   await expect(page.locator('#observation-band')).toContainText('CACHED · OFFLINE');
   await expect(page.locator('#observation-band')).toContainText('MAX M 4.2');
-  await page.keyboard.press('Tab');
+  if ((await page.locator('#controls-toggle').getAttribute('aria-expanded')) === 'false')
+    await page.locator('#controls-toggle').click();
   await page.getByRole('combobox', { name: 'Observation band', exact: true }).selectOption('off');
   const count = requests;
   await page.clock.runFor(300_000);
@@ -245,7 +273,7 @@ test('screensaver cycles offline, pauses, remembers settings and handles keyboar
   expect(errors).toEqual([]);
 });
 
-test('fullscreen clears the controls and keyboard navigation reveals them again', async ({
+test('fullscreen clears the controls and the keyboard can reopen them through the gear', async ({
   page,
 }) => {
   await page.goto('/screensaver.html');
@@ -254,9 +282,68 @@ test('fullscreen clears the controls and keyboard navigation reveals them again'
   await expect(page.locator('#display')).toBeFocused();
   await expect(page.locator('#dock')).toHaveCSS('opacity', '0');
   await page.keyboard.press('Tab');
+  await expect(page.getByRole('button', { name: 'Open controls', exact: true })).toBeFocused();
+  await page.keyboard.press('Enter');
   await expect(page.locator('#dock')).toHaveCSS('opacity', '1');
   await page.getByRole('button', { name: 'Exit fullscreen', exact: true }).click();
   await expect.poll(() => page.evaluate(() => Boolean(document.fullscreenElement))).toBe(false);
+});
+
+test('gear and minimize controls preserve settings and stay reachable on desktop and mobile', async ({
+  page,
+}) => {
+  await page.clock.install();
+  await page.goto('/screensaver.html');
+  const dock = page.locator('#dock');
+  const gear = page.locator('#controls-toggle');
+  for (const viewport of [
+    { width: 1440, height: 900 },
+    { width: 390, height: 844 },
+  ]) {
+    await page.setViewportSize(viewport);
+    await page.getByLabel('Brightness', { exact: true }).fill('65');
+    await page.locator('#controls-minimize').click();
+    await expect(gear).toHaveAttribute('aria-expanded', 'false');
+    await expect(gear).toBeFocused();
+    await expect(dock).toHaveAttribute('aria-hidden', 'true');
+    expect(await dock.evaluate((node) => node.inert)).toBe(true);
+    await page.mouse.move(20, 20);
+    await page.clock.runFor(35000);
+    await expect(dock).toBeHidden();
+    await page.keyboard.press('Tab');
+    expect(await dock.evaluate((node) => node.contains(document.activeElement))).toBe(false);
+    await gear.focus();
+    await page.keyboard.press('Space');
+    await expect(gear).toHaveAttribute('aria-expanded', 'true');
+    await expect(page.getByLabel('Brightness', { exact: true })).toHaveValue('65');
+    // An explicitly opened panel is not swept away by an idle timeout.
+    await page.locator('#display').focus();
+    await page.clock.runFor(35000);
+    await expect(dock).toBeVisible();
+    const boxes = await Promise.all([dock.boundingBox(), gear.boundingBox()]);
+    expect(boxes[0].y + boxes[0].height).toBeLessThan(boxes[1].y);
+    await page.keyboard.press('s');
+    await expect(dock).toBeHidden();
+    await gear.click();
+    await expect(dock).toBeVisible();
+    await page.getByRole('combobox', { name: 'Purpose', exact: true }).focus();
+    await page.keyboard.press('Escape');
+    await expect(dock).toBeHidden();
+    await expect(gear).toBeFocused();
+    await page.keyboard.press('s');
+    await expect(dock).toBeVisible();
+  }
+});
+
+test('initial controls recede after thirty seconds while the gear stays visible', async ({
+  page,
+}) => {
+  await page.clock.install();
+  await page.goto('/screensaver.html');
+  await page.mouse.move(1, 1);
+  await page.clock.runFor(31000);
+  await expect(page.locator('#dock')).toBeHidden();
+  await expect(page.getByRole('button', { name: 'Open controls', exact: true })).toBeVisible();
 });
 
 test('reduced motion, responsive diagrams, and controls remain accessible', async ({

@@ -13,11 +13,13 @@ let index = 0,
   tick = 0,
   elapsed = 0,
   paused = reducedMotion.matches,
-  hideTimer;
+  hideTimer,
+  controlsOpen = true;
 const settings = {
   purpose: 'shuffle',
   scheme: 'auto',
   layout: 'auto',
+  scanners: 'classic',
   motion: 'full',
   feed: 'off',
   interval: 30,
@@ -29,6 +31,7 @@ try {
     settings.purpose = saved.purpose;
   if (['auto', ...saverPalettes].includes(saved.scheme)) settings.scheme = saved.scheme;
   if (['auto', ...layouts].includes(saved.layout)) settings.layout = saved.layout;
+  if (['classic', 'rectangular'].includes(saved.scanners)) settings.scanners = saved.scanners;
   if (['full', 'calm', 'still'].includes(saved.motion)) settings.motion = saved.motion;
   if (['off', 'clock', 'earthquakes', 'space'].includes(saved.feed)) settings.feed = saved.feed;
   if ([15, 30, 60, 120].includes(saved.interval)) settings.interval = saved.interval;
@@ -40,7 +43,7 @@ try {
 for (const purpose of purposes) $('purpose').add(new Option(purpose.station, purpose.id));
 $('purpose').value = settings.purpose;
 $('palette').value = settings.scheme;
-for (const name of ['layout', 'motion', 'feed']) $(name).value = settings[name];
+for (const name of ['layout', 'scanners', 'motion', 'feed']) $(name).value = settings[name];
 $('interval').value = String(settings.interval);
 $('brightness').value = String(settings.brightness);
 document.documentElement.style.setProperty('--brightness', settings.brightness / 100);
@@ -90,6 +93,7 @@ function draw(entrance = false) {
     purpose: settings.purpose,
     scheme: settings.scheme,
     layout: settings.layout,
+    scanners: settings.scanners,
   });
   const markup = renderScene(scene, {
     portrait: innerHeight > innerWidth * 1.2,
@@ -110,7 +114,7 @@ function draw(entrance = false) {
   $('display').dataset.tick = String(tick);
   $('pause').textContent = paused ? 'Resume' : 'Pause';
   $('status').textContent =
-    `${paused ? 'Paused' : 'Running'} · ${scene.station} · Simulated instruments${settings.feed !== 'off' ? ' + observation band' : ''} · Move the pointer or press Tab for controls.`;
+    `${paused ? 'Paused' : 'Running'} · ${scene.station} · Simulated instruments${settings.feed !== 'off' ? ' + observation band' : ''} · Gear / S: controls · Escape: minimize.`;
 }
 function save() {
   try {
@@ -119,10 +123,21 @@ function save() {
     /* Optional. */
   }
 }
-function showControls() {
-  document.body.classList.remove('controls-hidden');
+function setControls(open) {
   clearTimeout(hideTimer);
-  hideTimer = setTimeout(() => document.body.classList.add('controls-hidden'), 4500);
+  controlsOpen = open;
+  if (!open && $('dock').contains(document.activeElement))
+    $('controls-toggle').focus({ preventScroll: true });
+  $('dock').inert = !open;
+  $('dock').setAttribute('aria-hidden', String(!open));
+  document.body.classList.toggle('controls-hidden', !open);
+  $('controls-toggle').setAttribute('aria-expanded', String(open));
+  const label = open ? 'Minimize controls' : 'Open controls';
+  $('controls-toggle').setAttribute('aria-label', label);
+  $('controls-toggle').title = `${label} (S)`;
+}
+function showControls() {
+  setControls(true);
 }
 function next() {
   index++;
@@ -151,6 +166,8 @@ async function fullscreen() {
 $('pause').addEventListener('click', togglePause);
 $('next').addEventListener('click', next);
 $('fullscreen').addEventListener('click', fullscreen);
+$('controls-toggle').addEventListener('click', () => setControls(!controlsOpen));
+$('controls-minimize').addEventListener('click', () => setControls(false));
 $('purpose').addEventListener('change', () => {
   settings.purpose = $('purpose').value;
   save();
@@ -161,12 +178,12 @@ $('palette').addEventListener('change', () => {
   save();
   draw(true);
 });
-for (const name of ['layout', 'motion', 'feed'])
+for (const name of ['layout', 'scanners', 'motion', 'feed'])
   $(name).addEventListener('change', () => {
     settings[name] = $(name).value;
     save();
     if (name === 'feed') client.select(settings.feed, !paused && !document.hidden);
-    draw(name === 'layout');
+    draw(name === 'layout' || name === 'scanners');
   });
 $('interval').addEventListener('change', () => {
   settings.interval = Number($('interval').value);
@@ -182,12 +199,9 @@ document.addEventListener('fullscreenchange', () => {
   $('fullscreen').textContent = document.fullscreenElement ? 'Exit fullscreen' : 'Fullscreen';
   if (document.fullscreenElement) {
     $('display').focus();
-    document.body.classList.add('controls-hidden');
+    setControls(false);
   } else showControls();
 });
-document.addEventListener('pointermove', showControls);
-document.addEventListener('pointerdown', showControls);
-document.addEventListener('focusin', showControls);
 let portrait = innerHeight > innerWidth * 1.2;
 window.addEventListener('resize', () => {
   const nextPortrait = innerHeight > innerWidth * 1.2;
@@ -205,7 +219,16 @@ document.addEventListener('visibilitychange', () => {
   }
 });
 document.addEventListener('keydown', (event) => {
-  showControls();
+  if (event.ctrlKey || event.metaKey || event.altKey) return;
+  if (event.key === 'Escape') {
+    setControls(false);
+    return;
+  }
+  if (event.key.toLowerCase() === 's' && !event.target.closest('input, select')) {
+    event.preventDefault();
+    setControls(!controlsOpen);
+    return;
+  }
   if (
     event.target.closest('input, select, button, a') ||
     event.ctrlKey ||
@@ -245,3 +268,7 @@ setInterval(() => {
 client.select(settings.feed, !paused && !document.hidden);
 draw(true);
 showControls();
+// Let the initial console recede once; explicitly opened controls stay open.
+hideTimer = setTimeout(() => {
+  if (!$('dock').matches(':hover, :focus-within')) setControls(false);
+}, 30000);

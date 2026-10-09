@@ -1,0 +1,157 @@
+@font-face {
+  font-family: Antonio;
+  src: url('fonts/Antonio.ttf');
+  font-weight: 100 700;
+  font-display: swap;
+}
+:root {
+  color-scheme: dark;
+  font-family: Arial, sans-serif;
+  background: #000;
+  color: #ede7db;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0 auto;
+  padding: 32px;
+  max-width: 1600px;
+}
+::selection {
+  background: #cc99cc;
+  color: #000;
+}
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  border-bottom: 16px solid #ff9966;
+  padding-bottom: 20px;
+}
+h1,
+h2 {
+  font-family: Antonio, sans-serif;
+  font-weight: 500;
+  margin: 0;
+}
+h1 {
+  font-size: clamp(28px, 4vw, 52px);
+  color: #ffcc66;
+}
+a {
+  color: #99ccff;
+  text-underline-offset: 5px;
+  padding: 12px 0;
+}
+.intro {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 24px;
+  padding: 24px 0;
+}
+.intro p {
+  margin: 0;
+  font-size: 22px;
+}
+.intro span,
+footer {
+  color: #b9ae9c;
+  font-size: 14px;
+}
+#maps {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 36px 28px;
+}
+article {
+  min-width: 0;
+  --map-color: #ffcc66;
+}
+article:first-child {
+  grid-column: 1 / -1;
+}
+.map {
+  border-top: 5px solid var(--map-color);
+  overflow: hidden;
+}
+.map svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+article:first-child .map svg {
+  max-height: 520px;
+}
+.caption {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 16px 0;
+  border-top: 1px solid var(--map-color);
+}
+h2 {
+  color: var(--map-color);
+  font-size: 27px;
+}
+.caption p {
+  max-width: 48ch;
+  margin: 10px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+button {
+  flex-shrink: 0;
+  min-height: 44px;
+  border: 0;
+  border-radius: 24px;
+  background: var(--map-color);
+  color: #000;
+  font:
+    500 17px Antonio,
+    sans-serif;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+button:hover {
+  background: #ede7db;
+}
+:focus-visible {
+  outline: 2px solid #ffff99;
+  outline-offset: 5px;
+}
+button:focus-visible {
+  outline-color: #000;
+  outline-offset: -5px;
+}
+footer {
+  margin: 44px 0 8px;
+  padding-top: 20px;
+  border-top: 5px solid #cc99cc;
+}
+@media (max-width: 700px) {
+  body {
+    padding: 20px 16px;
+  }
+  header,
+  .intro {
+    align-items: start;
+    flex-direction: column;
+    gap: 12px;
+  }
+  header a {
+    padding: 8px 0;
+  }
+  #maps {
+    grid-template-columns: 1fr;
+  }
+  .caption {
+    gap: 12px;
+  }
+  h2 {
+    font-size: 25px;
+  }
+}
